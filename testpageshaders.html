@@ -3,11 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Touchy Subjects | Shader Notes Option</title>
+    <title>Touchy Subjects | Stitched Test Page</title>
+    <meta
+      name="description"
+      content="A stitched concept page combining the fingerprint field, chroma heading, liquid motion, and shader notes directions for Touchy Subjects."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -17,23 +21,73 @@
         --green: #10b981;
         --orange: #f59e0b;
         --red: #ef4444;
+        --bg: #05070d;
+        --bg-soft: #0b101a;
+        --bg-panel: rgba(255, 255, 255, 0.055);
+        --line: rgba(255, 255, 255, 0.09);
+        --text: #f5f7fb;
+        --muted: rgba(245, 247, 251, 0.72);
+        --mx: 50%;
+        --my: 50%;
+        --shell: min(1180px, calc(100vw - 2rem));
       }
 
       * {
         box-sizing: border-box;
       }
 
-      body {
-        margin: 0;
-        font-family: "IBM Plex Mono", monospace;
-        color: #eef4ff;
-        background:
-          radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.12), transparent 24%),
-          linear-gradient(180deg, #05070d 0%, #090d16 100%);
+      html {
+        scroll-behavior: smooth;
       }
 
-      .shell {
-        width: min(1160px, calc(100vw - 2rem));
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Manrope", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 14% 14%, rgba(139, 92, 246, 0.18), transparent 24%),
+          radial-gradient(circle at 84% 20%, rgba(59, 130, 246, 0.18), transparent 22%),
+          radial-gradient(circle at 74% 78%, rgba(16, 185, 129, 0.12), transparent 24%),
+          linear-gradient(180deg, #04060b 0%, #070a11 42%, #05070d 100%);
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.24;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(circle at center, black 42%, transparent 100%);
+      }
+
+      #field,
+      #morph {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      #field {
+        opacity: 0.78;
+      }
+
+      #morph {
+        mix-blend-mode: screen;
+        opacity: 0.7;
+      }
+
+      .page {
+        position: relative;
+        z-index: 2;
+        width: var(--shell);
         margin: 0 auto;
         padding: 1rem 0 4rem;
       }
@@ -49,44 +103,333 @@
 
       .topbar a,
       .topbar span {
-        color: rgba(238, 244, 255, 0.66);
-        text-decoration: none;
-        font-size: 0.76rem;
-        font-weight: 700;
-        letter-spacing: 0.16em;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
+        text-decoration: none;
+        color: rgba(245, 247, 251, 0.66);
       }
 
-      .layout {
+      .hero {
+        position: relative;
         display: grid;
-        grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
-        gap: 1rem;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 1.25rem;
+        align-items: stretch;
+        min-height: calc(100svh - 8rem);
       }
 
-      .panel,
-      .preview {
-        border-radius: 1.7rem;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+      .hero-panel,
+      .stack-card,
+      .section-card,
+      .shader-panel,
+      .shader-preview,
+      .summary-card {
+        border: 1px solid var(--line);
+        background: var(--bg-panel);
         box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(20px);
       }
 
-      .panel {
-        padding: 1.2rem;
+      .hero-panel {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(1.5rem, 4vw, 3rem);
+        border-radius: 2rem;
       }
 
-      .panel h1,
-      .panel h2 {
+      .hero-panel::before {
+        content: "";
+        position: absolute;
+        inset: -18%;
+        background:
+          radial-gradient(circle at 24% 24%, rgba(139, 92, 246, 0.24), transparent 18%),
+          radial-gradient(circle at 76% 26%, rgba(59, 130, 246, 0.22), transparent 18%),
+          radial-gradient(circle at 34% 78%, rgba(16, 185, 129, 0.16), transparent 18%),
+          radial-gradient(circle at 84% 78%, rgba(245, 158, 11, 0.14), transparent 16%),
+          radial-gradient(circle at 56% 56%, rgba(239, 68, 68, 0.12), transparent 15%);
+        filter: blur(34px);
+      }
+
+      .eyebrow,
+      .micro-label {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin: 0 0 1rem;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.62);
+      }
+
+      .eyebrow::before,
+      .micro-label::before {
+        content: "";
+        width: 3rem;
+        height: 1px;
+        background: linear-gradient(90deg, var(--purple), transparent);
+      }
+
+      h1,
+      h2,
+      h3 {
         margin: 0;
         font-family: "Syne", sans-serif;
         text-transform: uppercase;
-        letter-spacing: -0.07em;
+        letter-spacing: -0.08em;
+        line-height: 0.9;
       }
 
-      .panel h1 {
-        font-size: clamp(2.8rem, 7vw, 5.5rem);
-        line-height: 0.92;
+      h1 {
+        font-size: clamp(3.8rem, 11vw, 9rem);
+      }
+
+      h2 {
+        font-size: clamp(2rem, 4vw, 4.4rem);
+      }
+
+      h3 {
+        font-size: clamp(1.55rem, 3vw, 2.45rem);
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+
+      .chroma-heading {
+        position: relative;
+        z-index: 1;
+        display: inline-grid;
+        max-width: 100%;
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: clamp(2.6rem, 6.4vw, 5.1rem);
+        line-height: 0.88;
+        letter-spacing: -0.08em;
+        text-transform: uppercase;
+        isolation: isolate;
+        filter:
+          drop-shadow(0 0 28px rgba(139, 92, 246, 0.08))
+          drop-shadow(0 0 34px rgba(59, 130, 246, 0.08))
+          drop-shadow(0 0 44px rgba(245, 158, 11, 0.06));
+      }
+
+      .chroma-heading > span {
+        grid-area: 1 / 1;
+        white-space: normal;
+      }
+
+      .chroma-heading__base,
+      .chroma-heading__glow,
+      .chroma-heading__split,
+      .chroma-heading__specular {
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .chroma-heading__base {
+        background-image:
+          linear-gradient(
+            100deg,
+            rgba(255, 255, 255, 0.92) 0%,
+            rgba(255, 255, 255, 0.46) 10%,
+            var(--purple) 20%,
+            var(--blue) 38%,
+            var(--green) 54%,
+            var(--orange) 71%,
+            var(--red) 86%,
+            rgba(255, 255, 255, 0.88) 100%
+          );
+        background-size: 240% 100%;
+        animation: chromaShift 10s linear infinite;
+        filter: url(#heading-distortion);
+      }
+
+      .chroma-heading__glow {
+        background-image:
+          radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.96), transparent 18%),
+          linear-gradient(
+            90deg,
+            rgba(139, 92, 246, 0.95) 0%,
+            rgba(59, 130, 246, 0.95) 22%,
+            rgba(16, 185, 129, 0.92) 48%,
+            rgba(245, 158, 11, 0.95) 72%,
+            rgba(239, 68, 68, 0.95) 100%
+          );
+        background-size: 140% 140%, 220% 100%;
+        background-position: center center, 0% 50%;
+        mix-blend-mode: screen;
+        opacity: 0.62;
+        filter: blur(10px);
+        animation: glowShift 13s linear infinite reverse;
+      }
+
+      .chroma-heading__split {
+        background-image:
+          linear-gradient(90deg, rgba(139, 92, 246, 0.84), rgba(59, 130, 246, 0.9) 32%, transparent 62%),
+          linear-gradient(90deg, transparent 22%, rgba(245, 158, 11, 0.84) 64%, rgba(239, 68, 68, 0.82) 100%);
+        mix-blend-mode: screen;
+        opacity: 0.72;
+        transform: translate(-0.012em, -0.01em);
+        animation: prismDrift 7.5s ease-in-out infinite alternate;
+      }
+
+      .chroma-heading__specular {
+        background-image:
+          linear-gradient(
+            110deg,
+            transparent 0%,
+            transparent 36%,
+            rgba(255, 255, 255, 0.05) 43%,
+            rgba(255, 255, 255, 0.95) 49%,
+            rgba(255, 255, 255, 0.08) 55%,
+            transparent 63%,
+            transparent 100%
+          );
+        background-size: 220% 100%;
+        mix-blend-mode: screen;
+        opacity: 0.95;
+        animation: shineSweep 5.5s ease-in-out infinite;
+      }
+
+      .support-copy {
+        position: relative;
+        z-index: 1;
+        max-width: 39rem;
+        margin-top: 1.15rem;
+        font-size: 1rem;
+      }
+
+      .swatch-row,
+      .chip-row {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.4rem;
+      }
+
+      .swatch,
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.72rem 0.95rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.78);
+        backdrop-filter: blur(12px);
+      }
+
+      .swatch::before {
+        content: "";
+        width: 0.72rem;
+        height: 0.72rem;
+        border-radius: 50%;
+        background: var(--swatch);
+        box-shadow: 0 0 16px color-mix(in srgb, var(--swatch) 70%, transparent);
+      }
+
+      .hero-aside {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .stack-card {
+        position: relative;
+        overflow: hidden;
+        padding: 1.3rem;
+        border-radius: 1.8rem;
+      }
+
+      .stack-card::before {
+        content: "";
+        position: absolute;
+        inset: auto -15% -35% auto;
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: radial-gradient(circle at center, color-mix(in srgb, var(--card-color) 46%, transparent), transparent 70%);
+        filter: blur(12px);
+      }
+
+      .stack-card strong,
+      .section-card strong,
+      .summary-card strong,
+      .shader-panel strong {
+        display: block;
+        margin-bottom: 0.55rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.58);
+      }
+
+      .stack-card h3 {
+        font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+      }
+
+      .section-card h3,
+      .summary-card h3 {
+        font-size: clamp(1.35rem, 2vw, 1.95rem);
+        line-height: 0.95;
+      }
+
+      .shader-panel h2 {
+        font-size: clamp(2.1rem, 4vw, 4rem);
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .section-card,
+      .summary-card {
+        padding: 1.2rem;
+        border-radius: 1.5rem;
+      }
+
+      .section-card {
+        background: rgba(5, 8, 15, 0.55);
+      }
+
+      .notes {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: minmax(280px, 0.95fr) minmax(0, 1.05fr);
+        gap: 1rem;
+      }
+
+      .shader-panel,
+      .shader-preview {
+        border-radius: 1.7rem;
+        overflow: hidden;
+      }
+
+      .shader-panel {
+        padding: 1.25rem;
+      }
+
+      .shader-panel p {
+        max-width: 34rem;
       }
 
       .code {
@@ -95,16 +438,18 @@
         border-radius: 1.1rem;
         background: rgba(0, 0, 0, 0.35);
         color: rgba(238, 244, 255, 0.86);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.92rem;
         line-height: 1.8;
         white-space: pre-wrap;
       }
 
-      .preview {
+      .shader-preview {
         position: relative;
-        min-height: 34rem;
+        min-height: 28rem;
       }
 
-      .preview::before {
+      .shader-preview::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -118,35 +463,84 @@
         animation: drift 12s ease-in-out infinite alternate;
       }
 
-      .preview::after {
+      .shader-preview::after {
         content: "";
         position: absolute;
-        inset: 14%;
+        inset: 16%;
         border-radius: 50%;
-        background:
-          conic-gradient(from 0deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red), var(--purple));
-        filter: blur(42px);
+        background: conic-gradient(from 0deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red), var(--purple));
+        filter: blur(40px);
         mix-blend-mode: screen;
         opacity: 0.74;
         animation: spin 18s linear infinite;
       }
 
-      .preview__ring {
+      .preview-ring {
         position: absolute;
         inset: 12%;
         border-radius: 50%;
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.16);
         box-shadow:
           inset 0 0 60px rgba(255, 255, 255, 0.06),
           0 0 90px rgba(59, 130, 246, 0.12);
       }
 
-      .preview__ring:nth-child(2) {
+      .preview-ring:nth-child(2) {
         inset: 24%;
       }
 
-      .preview__ring:nth-child(3) {
+      .preview-ring:nth-child(3) {
         inset: 35%;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 2.5rem 0 0;
+      }
+
+      .footer span {
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.56);
+      }
+
+      @keyframes chromaShift {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 240% 50%; }
+      }
+
+      @keyframes glowShift {
+        0% { background-position: 50% 50%, 0% 50%; }
+        100% { background-position: 50% 50%, 220% 50%; }
+      }
+
+      @keyframes shineSweep {
+        0%, 14% { background-position: 160% 50%; }
+        34%, 100% { background-position: -60% 50%; }
+      }
+
+      @keyframes prismDrift {
+        0% {
+          transform: translate(-0.018em, -0.012em);
+          opacity: 0.5;
+        }
+        100% {
+          transform: translate(0.014em, 0.014em);
+          opacity: 0.82;
+        }
       }
 
       @keyframes drift {
@@ -158,26 +552,136 @@
         to { transform: rotate(360deg); }
       }
 
-      @media (max-width: 920px) {
-        .layout {
+      @media (max-width: 960px) {
+        .hero,
+        .notes {
           grid-template-columns: 1fr;
+        }
+
+        .content-grid,
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .hero {
+          min-height: auto;
+        }
+
+        .chroma-heading > span {
+          white-space: normal;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
         }
       }
     </style>
   </head>
   <body>
-    <main class="shell">
+    <canvas id="morph" aria-hidden="true"></canvas>
+    <canvas id="field" aria-hidden="true"></canvas>
+
+    <svg width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="heading-distortion" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence
+          id="turbulence"
+          type="fractalNoise"
+          baseFrequency="0.006 0.012"
+          numOctaves="2"
+          seed="7"
+          result="noise"
+        />
+        <feDisplacementMap
+          id="displacement"
+          in="SourceGraphic"
+          in2="noise"
+          scale="18"
+          xChannelSelector="R"
+          yChannelSelector="B"
+        />
+      </filter>
+    </svg>
+
+    <main class="page">
       <header class="topbar">
         <a href="./index.html">Back to Gallery</a>
-        <span>Shader Notes Option</span>
+        <span>Stitched Test Page</span>
       </header>
 
-      <section class="layout">
-        <article class="panel">
-          <h1>Shader sketchbook.</h1>
+      <section class="hero">
+        <article class="hero-panel">
+          <p class="eyebrow">Stitched from testpage 2, 3, 4, and shader notes</p>
+          <div class="chroma-heading" data-text="Touchy Subjects">
+            <span class="chroma-heading__base">Touchy<br />Subjects</span>
+            <span class="chroma-heading__glow" aria-hidden="true">Touchy<br />Subjects</span>
+            <span class="chroma-heading__split" aria-hidden="true">Touchy<br />Subjects</span>
+            <span class="chroma-heading__specular" aria-hidden="true">Touchy<br />Subjects</span>
+          </div>
+          <p class="support-copy">
+            One page now carries the strongest parts of the experiments together: the fingerprint
+            field stays in the background, the chroma chrome heading carries the brand, the liquid
+            ambient motion softens the scene, and the shader-note panel keeps the dev-facing edge.
+          </p>
+          <div class="swatch-row" aria-label="Palette">
+            <span class="swatch" style="--swatch:#8B5CF6">Purple</span>
+            <span class="swatch" style="--swatch:#3B82F6">Blue</span>
+            <span class="swatch" style="--swatch:#10B981">Green</span>
+            <span class="swatch" style="--swatch:#F59E0B">Orange</span>
+            <span class="swatch" style="--swatch:#EF4444">Red</span>
+          </div>
+          <div class="content-grid">
+            <article class="section-card">
+              <strong>Field</strong>
+              <h3>Immersive fingerprint motion.</h3>
+              <p>The full-screen fingerprint light field survives as the page-wide atmospheric layer.</p>
+            </article>
+            <article class="section-card">
+              <strong>Heading</strong>
+              <h3>Chroma chrome identity.</h3>
+              <p>Pointer-reactive shimmer and displacement stay focused on the brand lockup.</p>
+            </article>
+            <article class="section-card">
+              <strong>Constraint</strong>
+              <h3>No cursor gimmick.</h3>
+              <p>The `testpage1` cursor follower is intentionally excluded so the page stays calmer.</p>
+            </article>
+          </div>
+        </article>
+
+        <aside class="hero-aside">
+          <article class="stack-card" style="--card-color:#10B981">
+            <strong>Liquid Volume</strong>
+            <h3>Ambient motion on top of the field.</h3>
+            <p>Soft color masses from `testpage4` now sit over the fingerprint system instead of replacing it.</p>
+          </article>
+          <article class="stack-card" style="--card-color:#3B82F6">
+            <strong>Shader Notes</strong>
+            <h3>Code-native mood, still useful.</h3>
+            <p>The shader study panel remains part of the story, but it now supports the page instead of standing alone.</p>
+          </article>
+          <article class="stack-card" style="--card-color:#EF4444">
+            <strong>Use Case</strong>
+            <h3>One gallery destination.</h3>
+            <p>This collapses the strongest visual ideas into a single concept page you can judge as a whole.</p>
+          </article>
+        </aside>
+      </section>
+
+      <section class="notes">
+        <article class="shader-panel">
+          <p class="micro-label">Shader sketchbook survives</p>
+          <h2>Raw note, cleaned up.</h2>
           <p>
-            This option turns the raw shader note into a presentable concept page. It is useful if
-            you want a more code-native, experimental mood in the gallery.
+            The original shader note remains visible here as the source gesture behind the visual
+            system. It anchors the stitched page in the same experimental logic instead of turning
+            into a purely decorative landing page.
           </p>
           <div class="code">let s = getRayDirection()
 color(s * .2)
@@ -188,12 +692,207 @@ box(vec3(0.5))
 expand(.2)</div>
         </article>
 
-        <div class="preview">
-          <div class="preview__ring"></div>
-          <div class="preview__ring"></div>
-          <div class="preview__ring"></div>
+        <div class="shader-preview" aria-hidden="true">
+          <div class="preview-ring"></div>
+          <div class="preview-ring"></div>
+          <div class="preview-ring"></div>
         </div>
       </section>
+
+      <section class="summary-grid">
+        <article class="summary-card">
+          <strong>Testpage 2</strong>
+          <h3>Field stays.</h3>
+          <p>The fingerprint field remains the most ownable motion layer in the set.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Testpage 3</strong>
+          <h3>Heading leads.</h3>
+          <p>The chroma chrome treatment now owns the first impression instead of living in isolation.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Testpage 4</strong>
+          <h3>Atmosphere softens.</h3>
+          <p>Liquid color motion keeps the page from reading too forensic or too mechanical.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Shader Notes</strong>
+          <h3>Dev edge remains.</h3>
+          <p>The shader-study framing still gives the concept a code-first personality.</p>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <span>Fingerprint field + chroma heading + liquid motion + shader notes</span>
+        <span>Touchy Subjects LLC</span>
+      </footer>
     </main>
+
+    <script>
+      const root = document.documentElement;
+      const heroPanel = document.querySelector(".hero-panel");
+      const turbulence = document.getElementById("turbulence");
+      const displacement = document.getElementById("displacement");
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (heroPanel) {
+        heroPanel.addEventListener("pointermove", (event) => {
+          const rect = heroPanel.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+          root.style.setProperty("--mx", x.toFixed(2) + "%");
+          root.style.setProperty("--my", y.toFixed(2) + "%");
+        });
+      }
+
+      if (!prefersReducedMotion && turbulence && displacement) {
+        let filterFrame = 0;
+
+        const animateFilter = () => {
+          filterFrame += 1;
+          const t = filterFrame * 0.012;
+          const freqX = 0.0058 + Math.sin(t * 0.9) * 0.0015;
+          const freqY = 0.011 + Math.cos(t * 0.72) * 0.0026;
+          const scale = 14 + Math.sin(t * 1.2) * 6;
+
+          turbulence.setAttribute("baseFrequency", freqX.toFixed(4) + " " + freqY.toFixed(4));
+          displacement.setAttribute("scale", scale.toFixed(2));
+
+          requestAnimationFrame(animateFilter);
+        };
+
+        animateFilter();
+      }
+
+      const fieldCanvas = document.getElementById("field");
+      const fieldContext = fieldCanvas.getContext("2d");
+      const fieldColors = ["#8B5CF6", "#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+      const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+
+      function resizeField() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        fieldCanvas.width = Math.round(window.innerWidth * dpr);
+        fieldCanvas.height = Math.round(window.innerHeight * dpr);
+        fieldContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function rgba(hex, alpha) {
+        const value = hex.slice(1);
+        const r = parseInt(value.slice(0, 2), 16);
+        const g = parseInt(value.slice(2, 4), 16);
+        const b = parseInt(value.slice(4, 6), 16);
+        return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+      }
+
+      function drawFingerprint(cx, cy, radius, color, time, seed) {
+        fieldContext.save();
+        fieldContext.translate(cx, cy);
+        fieldContext.rotate(Math.sin(time * 0.00018 + seed) * 0.12);
+        fieldContext.lineCap = "round";
+        fieldContext.lineJoin = "round";
+
+        for (let i = 0; i < 11; i += 1) {
+          const rx = radius - i * 14;
+          const ry = radius * 1.18 - i * 14.5;
+          fieldContext.beginPath();
+          for (let step = 0; step <= 110; step += 1) {
+            const t = Math.PI * 0.16 + (Math.PI * 1.66 * step) / 110;
+            const wave = Math.sin(t * 3.4 + seed + i * 0.4 + time * 0.0013) * 6;
+            const x = Math.cos(t) * (rx + wave) + Math.sin(t * 1.1 + seed) * 12;
+            const y = Math.sin(t) * (ry - wave * 0.4) - Math.pow(Math.abs(Math.cos(t)), 2.2) * 16;
+            if (step === 0) fieldContext.moveTo(x, y);
+            else fieldContext.lineTo(x, y);
+          }
+          fieldContext.strokeStyle = rgba(color, 0.05 + (10 - i) * 0.016);
+          fieldContext.lineWidth = 1 + (10 - i) * 0.08;
+          fieldContext.stroke();
+        }
+
+        fieldContext.restore();
+      }
+
+      function animateField(time) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        pointer.x += (pointer.tx - pointer.x) * 0.05;
+        pointer.y += (pointer.ty - pointer.y) * 0.05;
+        fieldContext.clearRect(0, 0, w, h);
+
+        const positions = [
+          [w * 0.18, h * 0.26, 180, 0],
+          [w * 0.78, h * 0.2, 160, 1.3],
+          [w * 0.36, h * 0.75, 140, 2.2],
+          [w * 0.76, h * 0.72, 138, 3.1],
+          [w * (0.5 + (pointer.x - 0.5) * 0.08), h * (0.5 + (pointer.y - 0.5) * 0.06), 115, 4.3]
+        ];
+
+        positions.forEach((item, index) => {
+          drawFingerprint(item[0], item[1], item[2], fieldColors[index], time, item[3]);
+        });
+
+        requestAnimationFrame(animateField);
+      }
+
+      const morphCanvas = document.getElementById("morph");
+      const morphContext = morphCanvas.getContext("2d");
+      const blobs = [
+        { color: "#8B5CF6", x: 0.2, y: 0.24, r: 220, sx: 0.0008, sy: 0.0006 },
+        { color: "#3B82F6", x: 0.8, y: 0.18, r: 200, sx: 0.0007, sy: 0.0009 },
+        { color: "#10B981", x: 0.66, y: 0.72, r: 210, sx: 0.0009, sy: 0.0007 },
+        { color: "#F59E0B", x: 0.3, y: 0.76, r: 190, sx: 0.0011, sy: 0.0008 },
+        { color: "#EF4444", x: 0.54, y: 0.46, r: 160, sx: 0.0006, sy: 0.001 }
+      ];
+
+      function resizeMorph() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        morphCanvas.width = Math.round(window.innerWidth * dpr);
+        morphCanvas.height = Math.round(window.innerHeight * dpr);
+        morphContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function animateMorph(time) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        morphContext.clearRect(0, 0, w, h);
+        morphContext.globalCompositeOperation = "lighter";
+
+        blobs.forEach((blob, index) => {
+          const x = w * blob.x + Math.sin(time * blob.sx + index) * 90;
+          const y = h * blob.y + Math.cos(time * blob.sy + index * 1.2) * 80;
+          const gradient = morphContext.createRadialGradient(x, y, 0, x, y, blob.r * 1.3);
+          gradient.addColorStop(0, blob.color + "70");
+          gradient.addColorStop(0.45, blob.color + "26");
+          gradient.addColorStop(1, blob.color + "00");
+          morphContext.fillStyle = gradient;
+          morphContext.beginPath();
+          morphContext.arc(x, y, blob.r, 0, Math.PI * 2);
+          morphContext.fill();
+        });
+
+        morphContext.globalCompositeOperation = "source-over";
+        requestAnimationFrame(animateMorph);
+      }
+
+      window.addEventListener("resize", () => {
+        resizeField();
+        resizeMorph();
+      });
+
+      window.addEventListener("pointermove", (event) => {
+        pointer.tx = event.clientX / window.innerWidth;
+        pointer.ty = event.clientY / window.innerHeight;
+      });
+
+      resizeField();
+      resizeMorph();
+
+      if (prefersReducedMotion) {
+        animateField(0);
+        animateMorph(0);
+      } else {
+        requestAnimationFrame(animateField);
+        requestAnimationFrame(animateMorph);
+      }
+    </script>
   </body>
 </html>

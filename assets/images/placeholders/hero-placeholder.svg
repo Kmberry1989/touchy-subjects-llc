@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Hero Placeholder</title>
+  <desc id="desc">Hero image placeholder for Touchy Subjects pages.</desc>
+  <defs>
+    <linearGradient id="bg" x1="140" y1="120" x2="1440" y2="1060" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#19142A"/>
+      <stop offset="0.3" stop-color="#244060"/>
+      <stop offset="0.62" stop-color="#194436"/>
+      <stop offset="1" stop-color="#472511"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="260" y1="198" x2="1340" y2="982" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="0.25" stop-color="#3B82F6"/>
+      <stop offset="0.5" stop-color="#10B981"/>
+      <stop offset="0.75" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#EF4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1200" rx="60" fill="url(#bg)"/>
+  <rect x="116" y="116" width="1368" height="968" rx="52" fill="white" fill-opacity="0.04" stroke="white" stroke-opacity="0.12"/>
+  <rect x="214" y="214" width="1172" height="772" rx="64" fill="black" fill-opacity="0.18"/>
+  <circle cx="448" cy="456" r="208" fill="#8B5CF6" fill-opacity="0.24"/>
+  <circle cx="830" cy="600" r="244" fill="#3B82F6" fill-opacity="0.24"/>
+  <circle cx="1138" cy="470" r="198" fill="#F59E0B" fill-opacity="0.22"/>
+  <circle cx="1020" cy="812" r="218" fill="#10B981" fill-opacity="0.18"/>
+  <path d="M560 376C758 376 918 536 918 734" stroke="url(#accent)" stroke-width="20" stroke-linecap="round"/>
+  <path d="M622 444C778 444 904 570 904 726" stroke="url(#accent)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M686 512C802 512 896 606 896 722" stroke="url(#accent)" stroke-width="13" stroke-linecap="round"/>
+  <text x="304" y="874" fill="white" fill-opacity="0.96" font-family="Syne, Arial, sans-serif" font-size="118" font-weight="800" letter-spacing="-8">HERO IMAGE</text>
+  <text x="308" y="946" fill="white" fill-opacity="0.62" font-family="Manrope, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="8">TOUCHY SUBJECTS LOCAL ASSET PLACEHOLDER</text>
+</svg>

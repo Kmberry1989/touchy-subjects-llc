@@ -487,7 +487,7 @@ function App() {
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 className="font-display text-[4.4rem] font-black uppercase leading-[0.82] tracking-[-0.1em] md:text-[7.2rem] xl:text-[10rem]"
               >
-                Feel <br />
+                Feel{" "}
                 <motion.span
                   animate={{
                     backgroundImage: [
@@ -500,7 +500,7 @@ function App() {
                   transition={{ duration: 12, repeat: Infinity, repeatType: "mirror" }}
                   className="inline-block text-transparent bg-clip-text"
                 >
-                  Everything.
+                  Touchy.
                 </motion.span>
               </motion.h1>
               <motion.p
