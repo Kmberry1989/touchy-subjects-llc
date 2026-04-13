@@ -1,6 +1,7 @@
 import React, {
   startTransition,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState
@@ -16,9 +17,9 @@ import {
   Home as HomeIcon,
   Shirt
 } from "lucide-react";
-import heroPlaceholder from "../../../assets/images/placeholders/hero-placeholder.png";
+import tosuMark from "../../../assets/images/brand/tosu.svg";
+import touchyWall from "../../../assets/images/brand/touchywall.png";
 import productPlaceholder from "../../../assets/images/placeholders/product-placeholder.png";
-import generalPlaceholder from "../../../assets/images/placeholders/general-placeholder.png";
 
 const CATEGORIES = [
   {
@@ -110,6 +111,105 @@ const PRODUCTS = [
 ];
 
 const HERO_COLORS = CATEGORIES.slice(0, 4);
+
+function ChromaHeading({ text, className = "" }) {
+  const containerRef = useRef(null);
+  const turbulenceRef = useRef(null);
+  const displacementRef = useRef(null);
+  const rawId = useId();
+  const filterId = `heading-distortion-${rawId.replace(/[:]/g, "")}`;
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return undefined;
+    }
+
+    let frame = 0;
+    let animationFrame = 0;
+
+    const animateFilter = () => {
+      frame += 1;
+      const t = frame * 0.012;
+      const freqX = 0.0058 + Math.sin(t * 0.9) * 0.0015;
+      const freqY = 0.011 + Math.cos(t * 0.72) * 0.0026;
+      const scale = 14 + Math.sin(t * 1.2) * 6;
+
+      if (turbulenceRef.current) {
+        turbulenceRef.current.setAttribute(
+          "baseFrequency",
+          `${freqX.toFixed(4)} ${freqY.toFixed(4)}`
+        );
+      }
+
+      if (displacementRef.current) {
+        displacementRef.current.setAttribute("scale", scale.toFixed(2));
+      }
+
+      animationFrame = window.requestAnimationFrame(animateFilter);
+    };
+
+    animationFrame = window.requestAnimationFrame(animateFilter);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  const handlePointerMove = (event) => {
+    const element = containerRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty("--mx", `${x.toFixed(2)}%`);
+    element.style.setProperty("--my", `${y.toFixed(2)}%`);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className={`chroma-heading ${className}`.trim()}
+      onPointerMove={handlePointerMove}
+    >
+      <svg width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence
+            ref={turbulenceRef}
+            type="fractalNoise"
+            baseFrequency="0.006 0.012"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
+          <feDisplacementMap
+            ref={displacementRef}
+            in="SourceGraphic"
+            in2="noise"
+            scale="18"
+            xChannelSelector="R"
+            yChannelSelector="B"
+          />
+        </filter>
+      </svg>
+      <span className="chroma-heading__base" style={{ filter: `url(#${filterId})` }}>
+        {text}
+      </span>
+      <span className="chroma-heading__glow" aria-hidden="true">
+        {text}
+      </span>
+      <span className="chroma-heading__split" aria-hidden="true">
+        {text}
+      </span>
+      <span className="chroma-heading__specular" aria-hidden="true">
+        {text}
+      </span>
+    </div>
+  );
+}
 
 function MorphingBackground() {
   const containerRef = useRef(null);
@@ -478,28 +578,14 @@ function App() {
               >
                 Elevated tactile tools from Kokomo, Indiana
               </motion.p>
-              <motion.h1
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="font-display text-[4.4rem] font-black uppercase leading-[0.82] tracking-[-0.1em] md:text-[7.2rem] xl:text-[10rem]"
+                className="mb-6"
               >
-                Feel{" "}
-                <motion.span
-                  animate={{
-                    backgroundImage: [
-                      "linear-gradient(to right, #8B5CF6, #3B82F6)",
-                      "linear-gradient(to right, #3B82F6, #10B981)",
-                      "linear-gradient(to right, #F59E0B, #EF4444)",
-                      "linear-gradient(to right, #EF4444, #8B5CF6)"
-                    ]
-                  }}
-                  transition={{ duration: 12, repeat: Infinity, repeatType: "mirror" }}
-                  className="inline-block text-transparent bg-clip-text"
-                >
-                  Touchy.
-                </motion.span>
-              </motion.h1>
+                <ChromaHeading className="chroma-heading--hero" text="Feel Touchy." />
+              </motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -555,9 +641,9 @@ function App() {
                   className="relative z-10"
                 >
                   <img
-                    src={heroPlaceholder}
-                    className="h-full w-full rounded-[3rem] object-cover shadow-hero transition-all duration-1000 hover:grayscale-0 md:rounded-[5rem]"
-                    alt="Touchy Subjects hero product"
+                    src={tosuMark}
+                    className="h-full w-full rounded-[3rem] bg-white/70 object-contain p-10 shadow-hero transition-all duration-1000 md:rounded-[5rem] md:p-16"
+                    alt="Touchy Subjects brand mark"
                   />
                 </motion.div>
               </div>
@@ -700,7 +786,7 @@ function App() {
           <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-24 xl:gap-32">
             <motion.div whileHover={{ scale: 1.02 }} className="group relative aspect-square overflow-hidden rounded-[3rem] shadow-2xl md:rounded-[5rem]">
               <img
-                src={generalPlaceholder}
+                src={touchyWall}
                 className="h-full w-full object-cover"
                 alt="Kokomo creative heritage"
               />
