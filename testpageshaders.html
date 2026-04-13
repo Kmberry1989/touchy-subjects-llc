@@ -558,6 +558,10 @@
           grid-template-columns: 1fr;
         }
 
+        .hero-aside {
+          margin-top: 1.5rem;
+        }
+
         .content-grid,
         .summary-grid {
           grid-template-columns: 1fr;
@@ -567,10 +571,30 @@
       @media (max-width: 820px) {
         .hero {
           min-height: auto;
+          gap: 1.75rem;
         }
 
         .chroma-heading > span {
           white-space: normal;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .hero-panel {
+          padding-bottom: 1.75rem;
+        }
+
+        .hero-aside {
+          margin-top: 2rem;
+        }
+
+        .footer {
+          align-items: flex-end;
+        }
+
+        .footer span:last-child {
+          font-size: 0.62rem;
+          text-align: right;
         }
       }
 

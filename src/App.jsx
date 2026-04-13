@@ -659,8 +659,11 @@ function Section({ children, className = "", id }) {
 }
 
 function App() {
+  const appRef = useRef(null);
+  const heroGridRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [isCompactLayout, setIsCompactLayout] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
@@ -677,6 +680,65 @@ function App() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const appElement = appRef.current;
+    const heroGridElement = heroGridRef.current;
+
+    if (!appElement || !heroGridElement) {
+      return undefined;
+    }
+
+    let frame = 0;
+    const navElement = document.querySelector("nav");
+
+    const measureViewportFit = () => {
+      frame = 0;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const navHeight = navElement?.getBoundingClientRect().height ?? 0;
+      const heroHeight = heroGridElement.getBoundingClientRect().height;
+      const hasHorizontalOverflow = document.documentElement.scrollWidth - viewportWidth > 1;
+      const heroExceedsViewport = viewportWidth <= 960 && heroHeight + navHeight + 24 > viewportHeight;
+      const shouldCompact = hasHorizontalOverflow || heroExceedsViewport;
+
+      setIsCompactLayout((current) => (current === shouldCompact ? current : shouldCompact));
+    };
+
+    const scheduleViewportFitCheck = () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+      }
+
+      frame = window.requestAnimationFrame(measureViewportFit);
+    };
+
+    const resizeObserver =
+      typeof ResizeObserver === "function"
+        ? new ResizeObserver(() => {
+            scheduleViewportFitCheck();
+          })
+        : null;
+
+    resizeObserver?.observe(appElement);
+    resizeObserver?.observe(heroGridElement);
+    if (navElement) {
+      resizeObserver?.observe(navElement);
+    }
+
+    window.addEventListener("resize", scheduleViewportFitCheck);
+    window.addEventListener("orientationchange", scheduleViewportFitCheck);
+    scheduleViewportFitCheck();
+
+    return () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+      }
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", scheduleViewportFitCheck);
+      window.removeEventListener("orientationchange", scheduleViewportFitCheck);
     };
   }, []);
 
@@ -748,7 +810,11 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-canvas text-ink selection:bg-orange/20 font-body">
+    <div
+      ref={appRef}
+      data-compact-layout={isCompactLayout ? "true" : "false"}
+      className="app-shell min-h-screen overflow-x-hidden bg-canvas text-ink selection:bg-orange/20 font-body"
+    >
       <MorphingBackground />
 
       <nav
@@ -780,19 +846,26 @@ function App() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.08 }}
-                whileHover={{ scale: 1.08, y: -2 }}
+                whileHover={{ scale: 1.04, y: -1 }}
                 onClick={() => setCategory(category.id)}
-                className="nav-button relative py-2 text-[0.62rem] font-black uppercase tracking-[0.22em] transition-all 2xl:text-xs"
+                className={`nav-button relative px-4 py-2.5 text-[0.62rem] font-black uppercase tracking-[0.22em] 2xl:text-xs ${
+                  activeCategory === category.id ? "is-active" : ""
+                }`}
                 style={{
-                  color: activeCategory === category.id ? category.color : "#444",
+                  "--nav-accent": category.color,
                   fontWeight: activeCategory === category.id ? 900 : 700
                 }}
               >
-                {category.name}
+                <span className="nav-button__text">
+                  <span className="nav-button__glow" aria-hidden="true">
+                    {category.name}
+                  </span>
+                  <span className="nav-button__label">{category.name}</span>
+                </span>
                 {activeCategory === category.id ? (
                   <motion.span
                     layoutId="underline"
-                    className="absolute inset-x-0 -bottom-1 h-1 rounded-full"
+                    className="nav-button__underline absolute inset-x-2 -bottom-1 h-1 rounded-full"
                     style={{ backgroundColor: category.color }}
                   />
                 ) : null}
@@ -800,7 +873,7 @@ function App() {
             ))}
             <a
               href="#collection"
-              className="interactive-link rounded-full bg-ink px-8 py-4 text-xs font-black uppercase tracking-[0.25em] text-white shadow-xl hover:scale-110 hover:shadow-2xl 2xl:px-10"
+              className="interactive-link nav-shop-link rounded-full bg-ink px-8 py-4 text-xs font-black uppercase tracking-[0.25em] text-white shadow-xl hover:scale-105 hover:shadow-2xl 2xl:px-10"
             >
               Shop
             </a>
@@ -866,62 +939,18 @@ function App() {
       </AnimatePresence>
 
       <main id="top" className="relative z-10">
-        <section className="relative flex min-h-[85vh] items-start overflow-hidden pt-32 md:pt-36 xl:pt-40">
-          <div className="mx-auto grid w-full max-w-7xl items-center gap-16 px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:gap-20">
-            <div className="order-1 lg:order-1">
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="mb-8 text-sm font-black uppercase tracking-[0.35em] text-black/45"
-              >
-                Elevated tactile tools from Kokomo, Indiana
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="mb-6"
-              >
-                <ChromaHeading className="chroma-heading--hero" text="FEEL TOUCHY" />
-              </motion.div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="mb-12 mt-8 max-w-2xl text-2xl font-semibold leading-relaxed text-black/55 md:text-3xl"
-              >
-                Elevated tactile tools for focused minds. Born from the vibrant Kokomo art scene.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-                className="flex flex-col gap-5 sm:flex-row"
-              >
-                <a
-                  href="#collection"
-                  className="interactive-link group inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.3em] text-white shadow-2xl hover:scale-105"
-                >
-                  The Collection
-                  <ChevronRight size={22} className="ml-4 transition-transform group-hover:translate-x-2" />
-                </a>
-                <a
-                  href="#story"
-                  className="interactive-link inline-flex items-center justify-center border-4 border-black/5 bg-white px-10 py-6 text-sm font-black uppercase tracking-[0.3em] hover:bg-black/[0.03]"
-                >
-                  The Story
-                </a>
-              </motion.div>
-            </div>
-
+        <section className="hero-shell relative flex min-h-[85vh] items-start overflow-hidden pt-24 md:pt-28 xl:pt-32">
+          <div
+            ref={heroGridRef}
+            className="hero-grid mx-auto grid w-full max-w-7xl items-center gap-12 px-6 lg:grid-cols-[minmax(320px,0.95fr)_minmax(0,1.05fr)] lg:gap-16"
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
-              className="order-2 lg:order-2 mt-12 md:mt-24 lg:mt-32"
+              className="hero-ambient-wrap order-1 mt-4 md:mt-8 lg:mt-0"
             >
-              <div className="perspective-panel relative mx-auto aspect-square w-full max-w-2xl">
+              <div className="perspective-panel hero-ambient-stage relative mx-auto aspect-square w-full max-w-[18rem] sm:max-w-[22rem] md:max-w-[28rem] lg:mx-0 lg:max-w-[32rem]">
                 <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-6 p-8 opacity-40 blur-2xl transition-all duration-700 hover:blur-3xl md:gap-8 md:p-12">
                   {HERO_COLORS.map((category, index) => (
                     <motion.div
@@ -955,6 +984,53 @@ function App() {
                 </motion.div>
               </div>
             </motion.div>
+
+            <div className="hero-copy order-2">
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-8 text-sm font-black uppercase tracking-[0.35em] text-black/45"
+              >
+                Elevated tactile tools from Kokomo, Indiana
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="hero-heading mb-6"
+              >
+                <ChromaHeading className="chroma-heading--hero" text="FEEL TOUCHY" />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="hero-lede mb-12 mt-8 max-w-2xl text-2xl font-semibold leading-relaxed text-black/55 md:text-3xl"
+              >
+                Elevated tactile tools for focused minds. Born from the vibrant Kokomo art scene.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="hero-actions flex flex-col gap-5 sm:flex-row"
+              >
+                <a
+                  href="#collection"
+                  className="interactive-link group inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.3em] text-white shadow-2xl hover:scale-105"
+                >
+                  The Collection
+                  <ChevronRight size={22} className="ml-4 transition-transform group-hover:translate-x-2" />
+                </a>
+                <a
+                  href="#story"
+                  className="interactive-link inline-flex items-center justify-center border-4 border-black/5 bg-white px-10 py-6 text-sm font-black uppercase tracking-[0.3em] hover:bg-black/[0.03]"
+                >
+                  The Story
+                </a>
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -1153,7 +1229,12 @@ function App() {
         </Section>
       </main>
 
+      <div className="w-full h-px bg-white" />
+
       <footer className="relative z-20 bg-ink py-24 text-white md:py-32 xl:py-48 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full z-30">
+          <SwatchTrail className="" style={{ width: "100%", maxWidth: "none" }} tailColor="#ffffff" />
+        </div>
         <FingerprintField />
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="mb-16 grid grid-cols-1 gap-14 md:mb-24 md:grid-cols-2 md:gap-14 xl:mb-32 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))] xl:gap-12">
@@ -1190,9 +1271,9 @@ function App() {
             ))}
           </div>
 
-          <div className="flex flex-col items-start justify-between gap-8 border-t border-white/10 pt-10 text-xs font-black uppercase tracking-[0.35em] text-white/20 md:flex-row md:items-center md:text-sm md:tracking-[0.5em] xl:pt-20">
+          <div className="flex flex-col items-end justify-between gap-6 border-t border-white/10 pt-10 text-right text-[0.62rem] font-black uppercase tracking-[0.28em] text-white/20 md:flex-row md:items-center md:gap-8 md:text-left md:text-sm md:tracking-[0.5em] xl:pt-20">
             <span>&copy; 2026 Touchy Subjects LLC.</span>
-            <div className="flex flex-wrap gap-8 md:gap-16">
+            <div className="flex flex-wrap justify-end gap-6 self-end md:gap-16">
               <a
                 href="https://www.facebook.com/KokomoArtAssociation"
                 target="_blank"
