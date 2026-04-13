@@ -1,0 +1,1226 @@
+import React, {
+  startTransition,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { Menu, X, ChevronRight } from "lucide-react";
+import handsIsolated from "../assets/images/brand/hands_isolated.svg";
+import iconTosuColor from "../assets/images/brand/icon_tosu_color.svg";
+import iconTouchAndGoes from "../assets/images/brand/icon_touch_and_goes.svg";
+import iconTouchBases from "../assets/images/brand/icon_touch_bases.svg";
+import iconTouchStones from "../assets/images/brand/icon_touch_stones.svg";
+import iconTouchTypes from "../assets/images/brand/icon_touch_types.svg";
+import iconTouchUpons from "../assets/images/brand/icon_touch_upons.svg";
+import tosuMark from "../assets/images/brand/tosu.svg";
+import touchyWall from "../assets/images/brand/touchywall.png";
+import productPlaceholder from "../assets/images/placeholders/product-placeholder.png";
+
+const CATEGORIES = [
+  {
+    id: "touch-bases",
+    name: "Touch Bases",
+    icon: iconTouchBases,
+    color: "#8B5CF6",
+    desc: "Grounded tactile essentials"
+  },
+  {
+    id: "touch-stones",
+    name: "Touch Stones",
+    icon: iconTouchStones,
+    color: "#3B82F6",
+    desc: "Pocket rituals and EDC"
+  },
+  {
+    id: "touch-types",
+    name: "Touch Types",
+    icon: iconTouchTypes,
+    color: "#10B981",
+    desc: "Desk tools and mark making"
+  },
+  {
+    id: "touch-upons",
+    name: "Touch Upons",
+    icon: iconTouchUpons,
+    color: "#F59E0B",
+    desc: "Spatial comfort and interiors"
+  },
+  {
+    id: "touch-and-goes",
+    name: "Touch'n Goes",
+    icon: iconTouchAndGoes,
+    color: "#EF4444",
+    desc: "Wearables and soft structures"
+  }
+];
+
+const PRODUCTS = [
+  {
+    id: 1,
+    category: "touch-stones",
+    name: "The Slider",
+    price: "$85",
+    desc: "Precision machined plates with adjustable magnetic tension.",
+    image: productPlaceholder
+  },
+  {
+    id: 2,
+    category: "touch-and-goes",
+    name: "The Axis Ring",
+    price: "$120",
+    desc: "Matte black band with a rotating knurled copper cylinder.",
+    image: productPlaceholder
+  },
+  {
+    id: 3,
+    category: "touch-types",
+    name: "The Pendulum Pen",
+    price: "$95",
+    desc: "Balanced rollerball with a silent, spinning cap.",
+    image: productPlaceholder
+  },
+  {
+    id: 4,
+    category: "touch-upons",
+    name: "The Lid",
+    price: "$150",
+    desc: "3lb charcoal velvet lap pillow weighted with glass microbeads.",
+    image: productPlaceholder
+  },
+  {
+    id: 5,
+    category: "touch-and-goes",
+    name: "Secret Hoodie",
+    price: "$110",
+    desc: "Heavyweight fleece with hidden friction loops.",
+    image: productPlaceholder
+  },
+  {
+    id: 6,
+    category: "touch-types",
+    name: "The Topo Pad",
+    price: "$75",
+    desc: "Recycled leather mat with topographic ridges.",
+    image: productPlaceholder
+  }
+];
+
+const HERO_COLORS = CATEGORIES.slice(0, 4);
+
+function ChromaHeading({ text, className = "" }) {
+  const containerRef = useRef(null);
+  const turbulenceRef = useRef(null);
+  const displacementRef = useRef(null);
+  const rawId = useId();
+  const filterId = `heading-distortion-${rawId.replace(/[:]/g, "")}`;
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return undefined;
+    }
+
+    let frame = 0;
+    let animationFrame = 0;
+
+    const animateFilter = () => {
+      frame += 1;
+      const t = frame * 0.012;
+      const freqX = 0.0058 + Math.sin(t * 0.9) * 0.0015;
+      const freqY = 0.011 + Math.cos(t * 0.72) * 0.0026;
+      const scale = 14 + Math.sin(t * 1.2) * 6;
+
+      if (turbulenceRef.current) {
+        turbulenceRef.current.setAttribute(
+          "baseFrequency",
+          `${freqX.toFixed(4)} ${freqY.toFixed(4)}`
+        );
+      }
+
+      if (displacementRef.current) {
+        displacementRef.current.setAttribute("scale", scale.toFixed(2));
+      }
+
+      animationFrame = window.requestAnimationFrame(animateFilter);
+    };
+
+    animationFrame = window.requestAnimationFrame(animateFilter);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  const handlePointerMove = (event) => {
+    const element = containerRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty("--mx", `${x.toFixed(2)}%`);
+    element.style.setProperty("--my", `${y.toFixed(2)}%`);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className={`chroma-heading ${className}`.trim()}
+      onPointerMove={handlePointerMove}
+    >
+      <svg width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence
+            ref={turbulenceRef}
+            type="fractalNoise"
+            baseFrequency="0.006 0.012"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
+          <feDisplacementMap
+            ref={displacementRef}
+            in="SourceGraphic"
+            in2="noise"
+            scale="18"
+            xChannelSelector="R"
+            yChannelSelector="B"
+          />
+        </filter>
+      </svg>
+      <span className="chroma-heading__base" style={{ filter: `url(#${filterId})` }}>
+        {text}
+      </span>
+      <span className="chroma-heading__glow" aria-hidden="true">
+        {text}
+      </span>
+      <span className="chroma-heading__split" aria-hidden="true">
+        {text}
+      </span>
+      <span className="chroma-heading__specular" aria-hidden="true">
+        {text}
+      </span>
+    </div>
+  );
+}
+
+function AnimatedSocialCard({ iconUrl, href, "aria-label": ariaLabel }) {
+  const cardRef = useRef(null);
+
+  const handlePointerMove = (event) => {
+    const element = cardRef.current;
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty("--mx", `${x.toFixed(2)}%`);
+    element.style.setProperty("--my", `${y.toFixed(2)}%`);
+  };
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={ariaLabel}
+      ref={cardRef}
+      className="hero-brand-card w-10 h-10 md:w-14 md:h-14 rounded-2xl flex-shrink-0 transition-transform hover:scale-110"
+      style={{ "--mx": "50%", "--my": "50%" }}
+      onPointerMove={handlePointerMove}
+    >
+      <div
+        className="hero-brand-card__symbol"
+        style={{ "--symbol-url": `url("${iconUrl}")` }}
+      >
+        <div className="hero-brand-card__layer hero-brand-card__layer--base" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--split" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
+      </div>
+    </a>
+  );
+}
+
+function SwatchTrail({ className = "mt-3", style, tailColor }) {
+  return (
+    <div className={`header-swatches ${className}`} style={style}>
+      {CATEGORIES.map((category) => (
+        <div
+          key={category.id}
+          className="header-swatch transition-transform duration-300 hover:scale-x-110"
+          style={{ backgroundColor: category.color }}
+        />
+      ))}
+      <div className="header-swatch header-swatch--trail" style={{ flex: 1, minWidth: '3rem', backgroundColor: tailColor || undefined }} />
+    </div>
+  );
+}
+
+function BrandMarkCard({ className = "" }) {
+  const cardRef = useRef(null);
+
+  const handlePointerMove = (event) => {
+    const element = cardRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty("--mx", `${x.toFixed(2)}%`);
+    element.style.setProperty("--my", `${y.toFixed(2)}%`);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className={`hero-brand-card ${className}`.trim()}
+      style={{
+        "--mx": "50%",
+        "--my": "50%"
+      }}
+      onPointerMove={handlePointerMove}
+      role="img"
+      aria-label="Touchy Subjects brand mark"
+    >
+      <div
+        className="hero-brand-card__symbol hero-brand-card__symbol--mono"
+        style={{ "--symbol-url": `url(${tosuMark})` }}
+      >
+        <div className="hero-brand-card__layer hero-brand-card__layer--base" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--split" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
+      </div>
+      <div
+        className="hero-brand-card__symbol hero-brand-card__symbol--alt"
+        style={{ "--symbol-url": `url(${iconTosuColor})` }}
+      >
+        <div className="hero-brand-card__layer hero-brand-card__layer--base" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--split" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
+      </div>
+    </div>
+  );
+}
+
+function MorphingBackground() {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    let teardown = () => {};
+
+    import("three").then((THREE) => {
+      if (cancelled || !container) {
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+
+      const geometry = new THREE.PlaneGeometry(2, 2);
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uResolution: {
+            value: new THREE.Vector2(window.innerWidth, window.innerHeight)
+          },
+          uMouse: { value: new THREE.Vector2(0, 0) }
+        },
+        vertexShader: `
+          varying vec2 vUv;
+
+          void main() {
+            vUv = uv;
+            gl_Position = vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          uniform vec2 uResolution;
+          uniform vec2 uMouse;
+          varying vec2 vUv;
+
+          vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
+
+          float snoise(vec2 v) {
+            const vec4 C = vec4(
+              0.211324865405187,
+              0.366025403784439,
+              -0.577350269189626,
+              0.024390243902439
+            );
+
+            vec2 i = floor(v + dot(v, C.yy));
+            vec2 x0 = v - i + dot(i, C.xx);
+            vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+            vec4 x12 = x0.xyxy + C.xxzz;
+            x12.xy -= i1;
+            i = mod(i, 289.0);
+
+            vec3 p = permute(
+              permute(i.y + vec3(0.0, i1.y, 1.0)) +
+              i.x + vec3(0.0, i1.x, 1.0)
+            );
+
+            vec3 m = max(
+              0.5 - vec3(
+                dot(x0, x0),
+                dot(x12.xy, x12.xy),
+                dot(x12.zw, x12.zw)
+              ),
+              0.0
+            );
+
+            m = m * m;
+            m = m * m;
+
+            vec3 x = 2.0 * fract(p * C.www) - 1.0;
+            vec3 h = abs(x) - 0.5;
+            vec3 ox = floor(x + 0.5);
+            vec3 a0 = x - ox;
+
+            m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+
+            vec3 g;
+            g.x = a0.x * x0.x + h.x * x0.y;
+            g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+
+            return 130.0 * dot(m, g);
+          }
+
+          void main() {
+            vec2 uv = vUv * 2.0 - 1.0;
+            uv.x *= uResolution.x / uResolution.y;
+
+            float dist = distance(uv, uMouse);
+            float mouseEffect = smoothstep(0.8, 0.0, dist) * 0.5;
+
+            float noiseScale = 1.8 + mouseEffect;
+            float n = snoise(uv * noiseScale + vec2(uTime * 0.1));
+
+            float ridges = sin(n * 12.0 + uTime * 0.5);
+            ridges = smoothstep(0.0, 0.1, ridges) - smoothstep(0.1, 0.2, ridges);
+
+            vec3 purple = vec3(0.545, 0.361, 0.965);
+            vec3 blue = vec3(0.231, 0.510, 0.965);
+            vec3 green = vec3(0.063, 0.725, 0.506);
+            vec3 bg = vec3(0.984, 0.984, 0.980);
+
+            vec3 color = mix(purple, blue, n * 0.5 + 0.5);
+            color = mix(color, green, ridges);
+
+            gl_FragColor = vec4(mix(bg, color, ridges * 0.15), 1.0);
+          }
+        `
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      let frameId = 0;
+
+      const handleResize = () => {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+      };
+
+      const handlePointerMove = (event) => {
+        const x = (event.clientX / window.innerWidth) * 2 - 1;
+        const y = -(event.clientY / window.innerHeight) * 2 + 1;
+        const aspect = window.innerWidth / window.innerHeight;
+        material.uniforms.uMouse.value.set(x * aspect, y);
+      };
+
+      const animate = (time) => {
+        material.uniforms.uTime.value = time * 0.001;
+        renderer.render(scene, camera);
+        frameId = window.requestAnimationFrame(animate);
+      };
+
+      window.addEventListener("resize", handleResize);
+      window.addEventListener("pointermove", handlePointerMove, { passive: true });
+      frameId = window.requestAnimationFrame(animate);
+
+      teardown = () => {
+        window.cancelAnimationFrame(frameId);
+        window.removeEventListener("resize", handleResize);
+        window.removeEventListener("pointermove", handlePointerMove);
+        geometry.dispose();
+        material.dispose();
+        renderer.dispose();
+        renderer.forceContextLoss();
+
+        if (renderer.domElement.parentNode === container) {
+          container.removeChild(renderer.domElement);
+        }
+      };
+    });
+
+    return () => {
+      cancelled = true;
+      teardown();
+    };
+  }, []);
+
+  return <div ref={containerRef} className="pointer-events-none fixed inset-0 z-0" aria-hidden="true" />;
+}
+
+function FingerprintField() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const colors = ["#8B5CF6", "#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+    const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+    let animationFrame;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(canvas.offsetWidth * dpr);
+      canvas.height = Math.round(canvas.offsetHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function rgba(hex, alpha) {
+      const value = hex.slice(1);
+      const r = parseInt(value.slice(0, 2), 16);
+      const g = parseInt(value.slice(2, 4), 16);
+      const b = parseInt(value.slice(4, 6), 16);
+      return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+    }
+
+    function drawFingerprint(cx, cy, radius, color, time, seed) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.sin(time * 0.00018 + seed) * 0.12);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      for (let i = 0; i < 11; i += 1) {
+        const rx = radius - i * 14;
+        const ry = radius * 1.18 - i * 14.5;
+        ctx.beginPath();
+        for (let step = 0; step <= 110; step += 1) {
+          const t = Math.PI * 0.16 + (Math.PI * 1.66 * step) / 110;
+          const wave = Math.sin(t * 3.4 + seed + i * 0.4 + time * 0.0013) * 6;
+          const x = Math.cos(t) * (rx + wave) + Math.sin(t * 1.1 + seed) * 12;
+          const y = Math.sin(t) * (ry - wave * 0.4) - Math.pow(Math.abs(Math.cos(t)), 2.2) * 16;
+          if (step === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = rgba(color, 0.06 + (10 - i) * 0.018);
+        ctx.lineWidth = 1 + (10 - i) * 0.08;
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function frame(time) {
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      pointer.x += (pointer.tx - pointer.x) * 0.05;
+      pointer.y += (pointer.ty - pointer.y) * 0.05;
+      ctx.clearRect(0, 0, w, h);
+      const positions = [
+        [w * 0.18, h * 0.26, 180, 0],
+        [w * 0.78, h * 0.2, 160, 1.3],
+        [w * 0.36, h * 0.75, 140, 2.2],
+        [w * 0.76, h * 0.72, 138, 3.1],
+        [w * (0.5 + (pointer.x - 0.5) * 0.08), h * (0.5 + (pointer.y - 0.5) * 0.06), 115, 4.3]
+      ];
+
+      positions.forEach((item, index) => {
+        drawFingerprint(item[0], item[1], item[2], colors[index], time, item[3]);
+      });
+
+      animationFrame = requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("resize", resize);
+    const handlePointerMove = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.tx = (event.clientX - rect.left) / rect.width;
+      pointer.ty = (event.clientY - rect.top) / rect.height;
+    };
+    window.addEventListener("pointermove", handlePointerMove);
+
+    resize();
+    animationFrame = requestAnimationFrame(frame);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", handlePointerMove);
+      cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 z-0 w-full h-full opacity-40 pointer-events-none" aria-hidden="true" />;
+}
+
+function LiquidVolume() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const blobs = [
+      { color: "#8B5CF6", x: 0.2, y: 0.24, r: 220, sx: 0.0008, sy: 0.0006 },
+      { color: "#3B82F6", x: 0.8, y: 0.18, r: 200, sx: 0.0007, sy: 0.0009 },
+      { color: "#10B981", x: 0.66, y: 0.72, r: 210, sx: 0.0009, sy: 0.0007 },
+      { color: "#F59E0B", x: 0.3, y: 0.76, r: 190, sx: 0.0011, sy: 0.0008 },
+      { color: "#EF4444", x: 0.54, y: 0.46, r: 160, sx: 0.0006, sy: 0.001 }
+    ];
+    let animationFrame;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(canvas.offsetWidth * dpr);
+      canvas.height = Math.round(canvas.offsetHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function draw(time) {
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#04070E";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.globalCompositeOperation = "lighter";
+      blobs.forEach((blob, index) => {
+        const x = w * blob.x + Math.sin(time * blob.sx + index) * 90;
+        const y = h * blob.y + Math.cos(time * blob.sy + index * 1.2) * 80;
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, blob.r * 1.3);
+        gradient.addColorStop(0, blob.color + "aa");
+        gradient.addColorStop(0.45, blob.color + "33");
+        gradient.addColorStop(1, blob.color + "00");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, blob.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalCompositeOperation = "source-over";
+
+      animationFrame = requestAnimationFrame(draw);
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+    animationFrame = requestAnimationFrame(draw);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-cover z-0" aria-hidden="true" />;
+}
+
+function Section({ children, className = "", id }) {
+  return (
+    <motion.section
+      id={id}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [scrolled, setScrolled] = useState(false);
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const rotateX = useSpring(tiltY, { stiffness: 150, damping: 18, mass: 0.5 });
+  const rotateY = useSpring(tiltX, { stiffness: 150, damping: 18, mass: 0.5 });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    if (activeCategory === "all") {
+      return PRODUCTS;
+    }
+
+    return PRODUCTS.filter((product) => product.category === activeCategory);
+  }, [activeCategory]);
+
+  const activeCategoryMeta = useMemo(() => {
+    if (activeCategory === "all") {
+      return {
+        name: "All",
+        desc: "Every tactile category",
+        color: "#121212"
+      };
+    }
+
+    return CATEGORIES.find((category) => category.id === activeCategory) ?? CATEGORIES[0];
+  }, [activeCategory]);
+
+  const setCategory = (categoryId) => {
+    startTransition(() => {
+      setActiveCategory(categoryId);
+    });
+  };
+
+  const handleHeroMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width;
+    const py = (event.clientY - rect.top) / rect.height;
+    tiltX.set((px - 0.5) * 10);
+    tiltY.set((0.5 - py) * 10);
+    event.currentTarget.style.setProperty("--mx", `${(px * 100).toFixed(2)}%`);
+    event.currentTarget.style.setProperty("--my", `${(py * 100).toFixed(2)}%`);
+  };
+
+  const resetHeroTilt = () => {
+    tiltX.set(0);
+    tiltY.set(0);
+  };
+
+  const footerSections = [
+    {
+      title: "Pillars",
+      links: CATEGORIES.map((category) => ({
+        label: category.name,
+        href: "#collection"
+      }))
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "Collection", href: "#collection" },
+        { label: "Story", href: "#story" },
+        { label: "Kokomo Art Association", href: "https://kokomoartassociation.com/" }
+      ]
+    },
+    {
+      title: "Social",
+      links: [
+        { label: "Facebook", href: "https://www.facebook.com/KokomoArtAssociation" },
+        { label: "Instagram", href: "https://www.instagram.com/kokomoartassociation" },
+        { label: "Touchy Subjects", href: "#top" }
+      ]
+    }
+  ];
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-canvas text-ink selection:bg-orange/20 font-body">
+      <MorphingBackground />
+
+      <nav
+        className={`fixed inset-x-0 top-0 z-[100] transition-all duration-700 ${
+          scrolled ? "bg-white/90 py-4 shadow-2xl backdrop-blur-2xl" : "bg-transparent py-6 md:py-12"
+        }`}
+      >
+        <div className="mx-auto flex max-w-[96rem] items-center justify-between gap-6 px-6">
+          <a href="#top" className="header-brand-lockup group flex min-w-0 flex-1 cursor-pointer flex-col">
+            <span className="font-display text-3xl font-black uppercase leading-none tracking-[-0.08em] md:text-4xl">
+              Touchy Subjects
+            </span>
+            <div className="header-swatches mt-3">
+              {CATEGORIES.map((category) => (
+                <div
+                  key={category.id}
+                  className="header-swatch transition-transform duration-300 group-hover:scale-x-110"
+                  style={{ backgroundColor: category.color }}
+                />
+              ))}
+              <div className="header-swatch header-swatch--trail" />
+            </div>
+          </a>
+
+          <div className="hidden items-center gap-4 xl:flex 2xl:gap-6">
+            {CATEGORIES.map((category, index) => (
+              <motion.button
+                key={category.id}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.08 }}
+                whileHover={{ scale: 1.08, y: -2 }}
+                onClick={() => setCategory(category.id)}
+                className="nav-button relative py-2 text-[0.62rem] font-black uppercase tracking-[0.22em] transition-all 2xl:text-xs"
+                style={{
+                  color: activeCategory === category.id ? category.color : "#444",
+                  fontWeight: activeCategory === category.id ? 900 : 700
+                }}
+              >
+                {category.name}
+                {activeCategory === category.id ? (
+                  <motion.span
+                    layoutId="underline"
+                    className="absolute inset-x-0 -bottom-1 h-1 rounded-full"
+                    style={{ backgroundColor: category.color }}
+                  />
+                ) : null}
+              </motion.button>
+            ))}
+            <a
+              href="#collection"
+              className="interactive-link rounded-full bg-ink px-8 py-4 text-xs font-black uppercase tracking-[0.25em] text-white shadow-xl hover:scale-110 hover:shadow-2xl 2xl:px-10"
+            >
+              Shop
+            </a>
+            <div className="flex items-center gap-3">
+              <AnimatedSocialCard
+                href="https://instagram.com"
+                aria-label="Instagram"
+                iconUrl="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='2' width='20' height='20' rx='5' ry='5'/%3E%3Cpath d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/%3E%3Cline x1='17.5' y1='6.5' x2='17.51' y2='6.5'/%3E%3C/svg%3E"
+              />
+              <AnimatedSocialCard
+                href="https://tiktok.com"
+                aria-label="TikTok"
+                iconUrl="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a3 3 0 0 1-3-3v8a4 4 0 0 1-4-4z'/%3E%3C/svg%3E"
+              />
+            </div>
+          </div>
+
+          <button
+            className="lg:hidden"
+            type="button"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            {isMenuOpen ? <X size={40} /> : <Menu size={40} />}
+          </button>
+        </div>
+      </nav>
+
+      <AnimatePresence>
+        {isMenuOpen ? (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            className="fixed inset-0 z-[110] flex flex-col bg-white p-12"
+          >
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(false)}
+              className="mb-16 self-end"
+              aria-label="Close menu"
+            >
+              <X size={48} />
+            </button>
+            <div className="flex flex-col space-y-10">
+              {CATEGORIES.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => {
+                    setCategory(category.id);
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-left font-display text-5xl font-black uppercase tracking-[-0.08em] md:text-6xl"
+                  style={{ color: category.color }}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      <main id="top" className="relative z-10">
+        <section className="relative flex min-h-[85vh] items-start overflow-hidden pt-32 md:pt-36 xl:pt-40">
+          <div className="mx-auto grid w-full max-w-7xl items-center gap-16 px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:gap-20">
+            <div className="order-1 lg:order-1">
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-8 text-sm font-black uppercase tracking-[0.35em] text-black/45"
+              >
+                Elevated tactile tools from Kokomo, Indiana
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-6"
+              >
+                <ChromaHeading className="chroma-heading--hero" text="FEEL TOUCHY" />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="mb-12 mt-8 max-w-2xl text-2xl font-semibold leading-relaxed text-black/55 md:text-3xl"
+              >
+                Elevated tactile tools for focused minds. Born from the vibrant Kokomo art scene.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="flex flex-col gap-5 sm:flex-row"
+              >
+                <a
+                  href="#collection"
+                  className="interactive-link group inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.3em] text-white shadow-2xl hover:scale-105"
+                >
+                  The Collection
+                  <ChevronRight size={22} className="ml-4 transition-transform group-hover:translate-x-2" />
+                </a>
+                <a
+                  href="#story"
+                  className="interactive-link inline-flex items-center justify-center border-4 border-black/5 bg-white px-10 py-6 text-sm font-black uppercase tracking-[0.3em] hover:bg-black/[0.03]"
+                >
+                  The Story
+                </a>
+              </motion.div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="order-2 lg:order-2 mt-12 md:mt-24 lg:mt-32"
+            >
+              <div className="perspective-panel relative mx-auto aspect-square w-full max-w-2xl">
+                <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-6 p-8 opacity-40 blur-2xl transition-all duration-700 hover:blur-3xl md:gap-8 md:p-12">
+                  {HERO_COLORS.map((category, index) => (
+                    <motion.div
+                      key={category.id}
+                      animate={{ borderRadius: ["4rem", "8rem", "4rem"] }}
+                      transition={{ duration: 6, delay: index * 0.5, repeat: Infinity }}
+                      className="h-full w-full"
+                      style={{ backgroundColor: category.color }}
+                    />
+                  ))}
+                </div>
+                <motion.div
+                  onMouseMove={handleHeroMove}
+                  onMouseLeave={resetHeroTilt}
+                  style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+                  className="relative z-10"
+                >
+                  <div className="hero-ambient-card">
+                    <div className="hero-ambient-card__grid" />
+                    <div className="hero-ambient-card__core" />
+                    <div className="hero-ambient-card__ring hero-ambient-card__ring--one" />
+                    <div className="hero-ambient-card__ring hero-ambient-card__ring--two" />
+                    <div className="hero-ambient-card__ring hero-ambient-card__ring--three" />
+                    <img
+                      src={iconTosuColor}
+                      alt=""
+                      aria-hidden="true"
+                      className="hero-ambient-card__seal"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <Section className="relative z-10 border-y-4 border-black/[0.03] bg-white/70 py-10 md:py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="category-liquid-panel">
+              <div aria-hidden="true" className="category-liquid-panel__veil" />
+              <div className="category-liquid-panel__content grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5 xl:gap-10">
+                {CATEGORIES.map((category) => {
+                  return (
+                    <motion.button
+                      key={category.id}
+                      whileHover={{ y: -15, scale: 1.03 }}
+                      type="button"
+                      onClick={() => setCategory(category.id)}
+                      className={`group relative z-10 flex flex-col items-center rounded-[2.5rem] p-8 text-center transition-all duration-700 md:p-10 xl:rounded-[3.5rem] xl:p-12 ${
+                        activeCategory === category.id
+                          ? "bg-white/95 shadow-2xl ring-1 ring-white/90"
+                          : "bg-white/72 opacity-100 shadow-[0_18px_45px_rgba(18,18,18,0.08)] ring-1 ring-white/70 backdrop-blur-xl hover:bg-white/84"
+                      }`}
+                    >
+                      <div
+                        className="relative z-10 mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] transition-transform group-hover:rotate-12 md:h-24 md:w-24 md:rounded-[2rem]"
+                        style={{ backgroundColor: `${category.color}18`, color: category.color }}
+                      >
+                        <img
+                          src={category.icon}
+                          alt=""
+                          aria-hidden="true"
+                          className="category-icon"
+                        />
+                      </div>
+                      <span
+                        className="relative z-10 text-lg font-black uppercase tracking-[0.25em] md:text-xl"
+                        style={{ color: activeCategory === category.id ? category.color : "#121212" }}
+                      >
+                        {category.name}
+                      </span>
+                      <span className="relative z-10 mt-4 text-[0.68rem] font-black uppercase tracking-[0.3em] text-black/60 md:text-xs">
+                        {category.desc}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Section id="collection" className="relative z-10 mx-auto max-w-7xl px-6 py-24 md:py-40 xl:py-56">
+          <div className="mb-20 flex flex-col gap-8 md:mb-32 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p
+                className="mb-5 text-sm font-black uppercase tracking-[0.35em]"
+                style={{ color: activeCategoryMeta.color }}
+              >
+                {activeCategoryMeta.desc}
+              </p>
+              <h2 className="font-display text-6xl font-black uppercase leading-none tracking-[-0.1em] md:text-7xl xl:text-8xl">
+                Collection
+              </h2>
+              <div className="mt-8 flex flex-wrap items-center gap-2">
+                {CATEGORIES.map((category) => (
+                  <motion.div
+                    key={category.id}
+                    animate={{ width: activeCategory === category.id ? 80 : 16 }}
+                    className="h-2.5 rounded-full"
+                    style={{ backgroundColor: category.color }}
+                  />
+                ))}
+                <div className="header-swatch header-swatch--trail collection-swatch-trail" />
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setCategory("all")}
+              className={`rounded-full border-4 px-10 py-5 text-sm font-black uppercase tracking-[0.4em] transition-all ${
+                activeCategory === "all"
+                  ? "border-transparent bg-ink text-white shadow-2xl"
+                  : "border-black/10 text-black/35"
+              }`}
+            >
+              All Products
+            </button>
+          </div>
+
+          <motion.div layout className="grid grid-cols-1 gap-x-10 gap-y-16 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-24 xl:gap-x-20 xl:gap-y-32">
+            <AnimatePresence mode="popLayout">
+              {filteredProducts.map((product) => {
+                const category = CATEGORIES.find((item) => item.id === product.category);
+                const categoryColor = category?.color ?? "#121212";
+                const categoryName = category?.name ?? product.category;
+
+                return (
+                  <motion.article
+                    layout
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    key={product.id}
+                    className="group cursor-pointer"
+                  >
+                    <div className="relative mb-8 aspect-square overflow-hidden rounded-[2.5rem] bg-black/5 shadow-md transition-all duration-700 group-hover:shadow-float md:mb-10 md:rounded-[4rem] lg:mb-12 lg:rounded-[4.5rem]">
+                      <img
+                        src={product.image}
+                        className="h-full w-full object-cover grayscale transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0"
+                        alt={product.name}
+                      />
+                      <div
+                        className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-20"
+                        style={{ backgroundColor: categoryColor }}
+                      />
+                      <div className="absolute inset-x-8 bottom-8 translate-y-12 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 md:inset-x-10 md:bottom-10 lg:inset-x-12 lg:bottom-12">
+                        <button
+                          type="button"
+                          className="w-full rounded-[1.5rem] bg-white py-5 text-xs font-black uppercase tracking-[0.3em] shadow-2xl transition-transform hover:scale-105 md:rounded-[2rem] md:py-6 lg:py-7"
+                        >
+                          Explore Design
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-start justify-between gap-6 px-2 md:px-4 lg:px-6">
+                      <div>
+                        <span className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: categoryColor }}>
+                          {categoryName}
+                        </span>
+                        <h3 className="mt-3 font-display text-3xl font-black uppercase tracking-[-0.07em]">
+                          {product.name}
+                        </h3>
+                        <p className="mt-5 max-w-xs text-lg font-bold leading-tight text-black/40 xl:text-xl">
+                          {product.desc}
+                        </p>
+                      </div>
+                      <span className="shrink-0 text-3xl font-black">{product.price}</span>
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+        </Section>
+
+        <Section id="story" className="relative z-10 overflow-hidden bg-white pt-24 md:pt-32 xl:pt-40">
+          <motion.div whileHover={{ scale: 1.01 }} className="story-heritage-band group relative">
+            <div className="story-heritage-band__inner">
+              <img
+                src={touchyWall}
+                className="story-heritage-band__image"
+                alt="Kokomo creative heritage"
+              />
+              <div className="story-heritage-band__overlay" />
+              <div className="story-heritage-band__copy">
+                <span className="font-display text-6xl font-black italic tracking-[-0.08em] md:text-8xl">
+                  Kokomo
+                </span>
+                <SwatchTrail className="mt-4 max-w-[200px]" />
+                <p className="mt-4 text-sm font-black uppercase tracking-[0.45em] opacity-80 md:mt-6 md:text-lg md:tracking-[0.6em]">
+                  Indiana Heritage
+                </p>
+              </div>
+            </div>
+          </motion.div>
+          <div className="relative mx-auto w-full min-h-[80vh] flex items-center pb-24 pt-16 md:pb-32 md:pt-20 xl:pb-48">
+            <LiquidVolume />
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-6">
+              <div className="max-w-3xl">
+                <h2 className="font-display text-6xl font-black uppercase leading-[0.85] tracking-[-0.1em] text-white md:text-7xl xl:text-8xl flex flex-col gap-2">
+                  <span>Get in</span>
+                  <ChromaHeading text="TOUCH" />
+                </h2>
+                <SwatchTrail className="mt-8 max-w-md" />
+                <form className="mt-12 flex flex-col gap-6 w-full max-w-xl bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-2xl">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="name" className="text-xs font-black uppercase tracking-[0.2em] text-white/70">Name</label>
+                    <input type="text" id="name" className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all" placeholder="Your name" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="email" className="text-xs font-black uppercase tracking-[0.2em] text-white/70">Email</label>
+                    <input type="email" id="email" className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all" placeholder="Your email" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="subjects" className="text-sm font-black uppercase tracking-[0.3em] text-white bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-1">Subjects:</label>
+                    <input type="text" id="subjects" className="bg-white/20 border-2 border-white/30 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-white focus:ring-2 focus:ring-white transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)]" placeholder="What's on your mind?" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="message" className="text-xs font-black uppercase tracking-[0.2em] text-white/70">Message</label>
+                    <textarea id="message" rows={4} className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all" placeholder="Your message"></textarea>
+                  </div>
+                  <button type="button" className="mt-4 interactive-link inline-flex items-center justify-center bg-white px-10 py-5 text-sm font-black uppercase tracking-[0.4em] text-ink shadow-2xl hover:scale-105 rounded-xl">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </Section>
+      </main>
+
+      <footer className="relative z-20 bg-ink py-24 text-white md:py-32 xl:py-48 overflow-hidden">
+        <FingerprintField />
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="mb-16 grid grid-cols-1 gap-14 md:mb-24 md:grid-cols-2 md:gap-14 xl:mb-32 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))] xl:gap-12">
+            <div className="min-w-0">
+              <span className="font-display text-3xl font-black uppercase leading-none tracking-[-0.08em] md:text-[2.75rem]">
+                Touchy <br />
+                Subjects
+              </span>
+              <p className="mt-8 max-w-xs text-lg font-bold leading-relaxed text-white/35 md:mt-12 md:text-xl">
+                Premium sensory tools for the restless mind. Curated in the heart of the Midwest.
+              </p>
+            </div>
+
+            {footerSections.map((section) => (
+              <div key={section.title} className="min-w-0">
+                <h4 className="mb-8 text-sm font-black uppercase tracking-[0.35em] text-white/35 md:mb-12">
+                  {section.title}
+                </h4>
+                <ul className="space-y-5 md:space-y-8">
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        target={link.href.startsWith("http") ? "_blank" : undefined}
+                        rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                        className="interactive-link footer-link text-base font-bold text-white/45 hover:text-white md:text-lg xl:text-xl"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col items-start justify-between gap-8 border-t border-white/10 pt-10 text-xs font-black uppercase tracking-[0.35em] text-white/20 md:flex-row md:items-center md:text-sm md:tracking-[0.5em] xl:pt-20">
+            <span>&copy; 2026 Touchy Subjects LLC.</span>
+            <div className="flex flex-wrap gap-8 md:gap-16">
+              <a
+                href="https://www.facebook.com/KokomoArtAssociation"
+                target="_blank"
+                rel="noreferrer"
+                className="interactive-link footer-link hover:text-white"
+              >
+                Facebook
+              </a>
+              <a
+                href="https://www.instagram.com/kokomoartassociation"
+                target="_blank"
+                rel="noreferrer"
+                className="interactive-link footer-link hover:text-white"
+              >
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+        <img
+          src={handsIsolated}
+          alt=""
+          aria-hidden="true"
+          className="footer-corner-hands"
+        />
+      </footer>
+    </div>
+  );
+}
+
+export default App;
