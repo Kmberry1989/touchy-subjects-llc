@@ -50,7 +50,7 @@ const CATEGORIES = [
   },
   {
     id: "touch-and-goes",
-    name: "Touch and Goes",
+    name: "Touch'n Goes",
     icon: iconTouchAndGoes,
     color: "#EF4444",
     desc: "Wearables and soft structures"
@@ -231,7 +231,6 @@ function BrandMarkCard({ className = "" }) {
       ref={cardRef}
       className={`hero-brand-card ${className}`.trim()}
       style={{
-        "--mark-url": `url(${tosuMark})`,
         "--mx": "50%",
         "--my": "50%"
       }}
@@ -239,10 +238,24 @@ function BrandMarkCard({ className = "" }) {
       role="img"
       aria-label="Touchy Subjects brand mark"
     >
-      <div className="hero-brand-card__layer hero-brand-card__layer--base" />
-      <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
-      <div className="hero-brand-card__layer hero-brand-card__layer--split" />
-      <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
+      <div
+        className="hero-brand-card__symbol hero-brand-card__symbol--mono"
+        style={{ "--symbol-url": `url(${tosuMark})` }}
+      >
+        <div className="hero-brand-card__layer hero-brand-card__layer--base" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--split" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
+      </div>
+      <div
+        className="hero-brand-card__symbol hero-brand-card__symbol--alt"
+        style={{ "--symbol-url": `url(${iconTosuColor})` }}
+      >
+        <div className="hero-brand-card__layer hero-brand-card__layer--base" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--split" />
+        <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
+      </div>
     </div>
   );
 }
@@ -535,31 +548,33 @@ function App() {
           scrolled ? "bg-white/90 py-4 shadow-2xl backdrop-blur-2xl" : "bg-transparent py-6 md:py-12"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6">
-          <a href="#top" className="group flex cursor-pointer flex-col">
+        <div className="mx-auto flex max-w-[96rem] items-center justify-between gap-6 px-6">
+          <a href="#top" className="header-brand-lockup group flex min-w-0 flex-1 cursor-pointer flex-col">
             <span className="font-display text-3xl font-black uppercase leading-none tracking-[-0.08em] md:text-4xl">
               Touchy Subjects
             </span>
-            <div className="mt-2 flex space-x-1">
+            <div className="header-swatches mt-3">
               {CATEGORIES.map((category) => (
                 <div
                   key={category.id}
-                  className="h-2 w-5 rounded-full transition-transform duration-300 group-hover:scale-x-110"
+                  className="header-swatch transition-transform duration-300 group-hover:scale-x-110"
                   style={{ backgroundColor: category.color }}
                 />
               ))}
+              <div className="header-swatch header-swatch--trail" />
             </div>
           </a>
 
-          <div className="hidden items-center space-x-6 lg:flex xl:space-x-10">
+          <div className="hidden items-center gap-4 xl:flex 2xl:gap-6">
             {CATEGORIES.map((category, index) => (
               <motion.button
                 key={category.id}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.08 }}
+                whileHover={{ scale: 1.08, y: -2 }}
                 onClick={() => setCategory(category.id)}
-                className="relative py-2 text-sm font-black uppercase tracking-[0.3em] transition-all"
+                className="nav-button relative py-2 text-[0.62rem] font-black uppercase tracking-[0.22em] transition-all 2xl:text-xs"
                 style={{
                   color: activeCategory === category.id ? category.color : "#444",
                   fontWeight: activeCategory === category.id ? 900 : 700
@@ -577,7 +592,7 @@ function App() {
             ))}
             <a
               href="#collection"
-              className="rounded-full bg-ink px-10 py-4 text-sm font-black uppercase tracking-[0.25em] text-white transition-all hover:scale-110 hover:shadow-2xl"
+              className="interactive-link rounded-full bg-ink px-8 py-4 text-xs font-black uppercase tracking-[0.25em] text-white shadow-xl hover:scale-110 hover:shadow-2xl 2xl:px-10"
             >
               Shop
             </a>
@@ -632,9 +647,9 @@ function App() {
       </AnimatePresence>
 
       <main id="top" className="relative z-10">
-        <section className="relative flex min-h-screen items-center overflow-hidden pt-28 md:pt-20">
+        <section className="relative flex min-h-screen items-start overflow-hidden pt-36 md:pt-40 xl:pt-44">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-16 px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:gap-20">
-            <div className="order-2 lg:order-1">
+            <div className="order-1 lg:order-1">
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -667,14 +682,14 @@ function App() {
               >
                 <a
                   href="#collection"
-                  className="group inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.3em] text-white shadow-2xl transition-all hover:scale-105"
+                  className="interactive-link group inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.3em] text-white shadow-2xl hover:scale-105"
                 >
                   The Collection
                   <ChevronRight size={22} className="ml-4 transition-transform group-hover:translate-x-2" />
                 </a>
                 <a
                   href="#story"
-                  className="inline-flex items-center justify-center border-4 border-black/5 bg-white px-10 py-6 text-sm font-black uppercase tracking-[0.3em] transition-all hover:bg-black/[0.03]"
+                  className="interactive-link inline-flex items-center justify-center border-4 border-black/5 bg-white px-10 py-6 text-sm font-black uppercase tracking-[0.3em] hover:bg-black/[0.03]"
                 >
                   The Story
                 </a>
@@ -685,7 +700,7 @@ function App() {
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
-              className="order-1 lg:order-2"
+              className="order-2 lg:order-2"
             >
               <div className="perspective-panel relative mx-auto aspect-square w-full max-w-2xl">
                 <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-6 p-8 opacity-40 blur-2xl transition-all duration-700 hover:blur-3xl md:gap-8 md:p-12">
@@ -868,16 +883,16 @@ function App() {
           </motion.div>
         </Section>
 
-        <Section id="story" className="relative z-10 overflow-hidden bg-white py-24 md:py-40 xl:py-64">
-          <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-24 xl:gap-32">
-            <motion.div whileHover={{ scale: 1.02 }} className="group relative aspect-[16/10] overflow-hidden rounded-[3rem] shadow-2xl md:aspect-[5/4] md:rounded-[5rem]">
+        <Section id="story" className="relative z-10 overflow-hidden bg-white pt-24 md:pt-32 xl:pt-40">
+          <motion.div whileHover={{ scale: 1.01 }} className="story-heritage-band group relative">
+            <div className="story-heritage-band__inner">
               <img
                 src={touchyWall}
-                className="h-full w-full object-cover"
+                className="story-heritage-band__image"
                 alt="Kokomo creative heritage"
               />
-              <div className="absolute inset-0 bg-black/50" />
-              <div className="absolute bottom-10 left-10 text-white md:bottom-16 md:left-16">
+              <div className="story-heritage-band__overlay" />
+              <div className="story-heritage-band__copy">
                 <span className="font-display text-6xl font-black italic tracking-[-0.08em] md:text-8xl">
                   Kokomo
                 </span>
@@ -885,17 +900,10 @@ function App() {
                   Indiana Heritage
                 </p>
               </div>
-            </motion.div>
-
-            <div>
-              <div className="mb-8 flex items-center gap-5">
-                <div className="story-brand-chip">
-                  <img src={iconTosuColor} alt="Touchy Subjects color symbol" className="story-brand-chip__mark" />
-                </div>
-                <div className="story-brand-chip story-brand-chip--hands">
-                  <img src={handsIsolated} alt="Touchy Subjects hands illustration" className="story-brand-chip__hands" />
-                </div>
-              </div>
+            </div>
+          </motion.div>
+          <div className="mx-auto max-w-7xl px-6 pb-24 pt-16 md:pb-32 md:pt-20 xl:pb-48">
+            <div className="max-w-3xl">
               <h2 className="font-display text-6xl font-black uppercase leading-[0.85] tracking-[-0.1em] md:text-7xl xl:text-8xl">
                 Rooted in <br />
                 <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
@@ -910,7 +918,7 @@ function App() {
                 href="https://kokomoartassociation.com/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.4em] text-white shadow-2xl transition-all hover:scale-105"
+                className="interactive-link inline-flex items-center justify-center bg-ink px-10 py-6 text-sm font-black uppercase tracking-[0.4em] text-white shadow-2xl hover:scale-105"
               >
                 The Association
               </a>
@@ -921,8 +929,8 @@ function App() {
 
       <footer className="relative z-20 bg-ink py-24 text-white md:py-32 xl:py-48">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-16 grid grid-cols-1 gap-14 md:mb-24 md:grid-cols-4 md:gap-12 xl:mb-32 xl:gap-20">
-            <div>
+          <div className="mb-16 grid grid-cols-1 gap-14 md:mb-24 md:grid-cols-2 md:gap-14 xl:mb-32 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))] xl:gap-12">
+            <div className="min-w-0">
               <div className="mb-6 flex items-center gap-4 md:mb-8">
                 <img src={iconTosuColor} alt="" aria-hidden="true" className="footer-brand-mark" />
                 <img src={handsIsolated} alt="" aria-hidden="true" className="footer-hands-mark" />
@@ -937,7 +945,7 @@ function App() {
             </div>
 
             {footerSections.map((section) => (
-              <div key={section.title}>
+              <div key={section.title} className="min-w-0">
                 <h4 className="mb-8 text-sm font-black uppercase tracking-[0.35em] text-white/35 md:mb-12">
                   {section.title}
                 </h4>
@@ -948,7 +956,7 @@ function App() {
                         href={link.href}
                         target={link.href.startsWith("http") ? "_blank" : undefined}
                         rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                        className="text-lg font-bold text-white/45 transition-colors hover:text-white md:text-xl"
+                        className="interactive-link footer-link text-base font-bold text-white/45 hover:text-white md:text-lg xl:text-xl"
                       >
                         {link.label}
                       </a>
@@ -966,7 +974,7 @@ function App() {
                 href="https://www.facebook.com/KokomoArtAssociation"
                 target="_blank"
                 rel="noreferrer"
-                className="transition-colors hover:text-white"
+                className="interactive-link footer-link hover:text-white"
               >
                 Facebook
               </a>
@@ -974,7 +982,7 @@ function App() {
                 href="https://www.instagram.com/kokomoartassociation"
                 target="_blank"
                 rel="noreferrer"
-                className="transition-colors hover:text-white"
+                className="interactive-link footer-link hover:text-white"
               >
                 Instagram
               </a>
