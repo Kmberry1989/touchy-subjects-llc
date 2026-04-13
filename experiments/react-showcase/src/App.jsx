@@ -7,62 +7,60 @@ import React, {
   useState
 } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import {
-  Menu,
-  X,
-  ChevronRight,
-  ShoppingBag,
-  Move,
-  PenTool,
-  Home as HomeIcon,
-  Shirt
-} from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
+import handsIsolated from "../../../assets/images/brand/hands_isolated.svg";
+import iconTosuColor from "../../../assets/images/brand/icon_tosu_color.svg";
+import iconTouchAndGoes from "../../../assets/images/brand/icon_touch_and_goes.svg";
+import iconTouchBases from "../../../assets/images/brand/icon_touch_bases.svg";
+import iconTouchStones from "../../../assets/images/brand/icon_touch_stones.svg";
+import iconTouchTypes from "../../../assets/images/brand/icon_touch_types.svg";
+import iconTouchUpons from "../../../assets/images/brand/icon_touch_upons.svg";
 import tosuMark from "../../../assets/images/brand/tosu.svg";
 import touchyWall from "../../../assets/images/brand/touchywall.png";
 import productPlaceholder from "../../../assets/images/placeholders/product-placeholder.png";
 
 const CATEGORIES = [
   {
-    id: "wear",
-    name: "Wear",
-    icon: ShoppingBag,
+    id: "touch-bases",
+    name: "Touch Bases",
+    icon: iconTouchBases,
     color: "#8B5CF6",
-    desc: "Haptic Adornments"
+    desc: "Grounded tactile essentials"
   },
   {
-    id: "feel",
-    name: "Feel",
-    icon: Move,
+    id: "touch-stones",
+    name: "Touch Stones",
+    icon: iconTouchStones,
     color: "#3B82F6",
-    desc: "Tactile EDC"
+    desc: "Pocket rituals and EDC"
   },
   {
-    id: "home",
-    name: "Home",
-    icon: HomeIcon,
+    id: "touch-types",
+    name: "Touch Types",
+    icon: iconTouchTypes,
     color: "#10B981",
-    desc: "Sensory Interior"
+    desc: "Desk tools and mark making"
   },
   {
-    id: "desk",
-    name: "Desk",
-    icon: PenTool,
+    id: "touch-upons",
+    name: "Touch Upons",
+    icon: iconTouchUpons,
     color: "#F59E0B",
-    desc: "Kinetic Office"
+    desc: "Spatial comfort and interiors"
   },
   {
-    id: "thread",
-    name: "Thread",
-    icon: Shirt,
+    id: "touch-and-goes",
+    name: "Touch and Goes",
+    icon: iconTouchAndGoes,
     color: "#EF4444",
-    desc: "Textile Architecture"
+    desc: "Wearables and soft structures"
   }
 ];
 
 const PRODUCTS = [
   {
     id: 1,
-    category: "feel",
+    category: "touch-stones",
     name: "The Slider",
     price: "$85",
     desc: "Precision machined plates with adjustable magnetic tension.",
@@ -70,7 +68,7 @@ const PRODUCTS = [
   },
   {
     id: 2,
-    category: "wear",
+    category: "touch-and-goes",
     name: "The Axis Ring",
     price: "$120",
     desc: "Matte black band with a rotating knurled copper cylinder.",
@@ -78,7 +76,7 @@ const PRODUCTS = [
   },
   {
     id: 3,
-    category: "desk",
+    category: "touch-types",
     name: "The Pendulum Pen",
     price: "$95",
     desc: "Balanced rollerball with a silent, spinning cap.",
@@ -86,7 +84,7 @@ const PRODUCTS = [
   },
   {
     id: 4,
-    category: "home",
+    category: "touch-upons",
     name: "The Lid",
     price: "$150",
     desc: "3lb charcoal velvet lap pillow weighted with glass microbeads.",
@@ -94,7 +92,7 @@ const PRODUCTS = [
   },
   {
     id: 5,
-    category: "thread",
+    category: "touch-and-goes",
     name: "Secret Hoodie",
     price: "$110",
     desc: "Heavyweight fleece with hidden friction loops.",
@@ -102,7 +100,7 @@ const PRODUCTS = [
   },
   {
     id: 6,
-    category: "desk",
+    category: "touch-types",
     name: "The Topo Pad",
     price: "$75",
     desc: "Recycled leather mat with topographic ridges.",
@@ -207,6 +205,44 @@ function ChromaHeading({ text, className = "" }) {
       <span className="chroma-heading__specular" aria-hidden="true">
         {text}
       </span>
+    </div>
+  );
+}
+
+function BrandMarkCard({ className = "" }) {
+  const cardRef = useRef(null);
+
+  const handlePointerMove = (event) => {
+    const element = cardRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty("--mx", `${x.toFixed(2)}%`);
+    element.style.setProperty("--my", `${y.toFixed(2)}%`);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className={`hero-brand-card ${className}`.trim()}
+      style={{
+        "--mark-url": `url(${tosuMark})`,
+        "--mx": "50%",
+        "--my": "50%"
+      }}
+      onPointerMove={handlePointerMove}
+      role="img"
+      aria-label="Touchy Subjects brand mark"
+    >
+      <div className="hero-brand-card__layer hero-brand-card__layer--base" />
+      <div className="hero-brand-card__layer hero-brand-card__layer--glow" />
+      <div className="hero-brand-card__layer hero-brand-card__layer--split" />
+      <div className="hero-brand-card__layer hero-brand-card__layer--specular" />
     </div>
   );
 }
@@ -455,12 +491,40 @@ function App() {
     const py = (event.clientY - rect.top) / rect.height;
     tiltX.set((px - 0.5) * 10);
     tiltY.set((0.5 - py) * 10);
+    event.currentTarget.style.setProperty("--mx", `${(px * 100).toFixed(2)}%`);
+    event.currentTarget.style.setProperty("--my", `${(py * 100).toFixed(2)}%`);
   };
 
   const resetHeroTilt = () => {
     tiltX.set(0);
     tiltY.set(0);
   };
+
+  const footerSections = [
+    {
+      title: "Pillars",
+      links: CATEGORIES.map((category) => ({
+        label: category.name,
+        href: "#collection"
+      }))
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "Collection", href: "#collection" },
+        { label: "Story", href: "#story" },
+        { label: "Kokomo Art Association", href: "https://kokomoartassociation.com/" }
+      ]
+    },
+    {
+      title: "Social",
+      links: [
+        { label: "Facebook", href: "https://www.facebook.com/KokomoArtAssociation" },
+        { label: "Instagram", href: "https://www.instagram.com/kokomoartassociation" },
+        { label: "Touchy Subjects", href: "#top" }
+      ]
+    }
+  ];
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-canvas text-ink selection:bg-orange/20 font-body">
@@ -487,7 +551,7 @@ function App() {
             </div>
           </a>
 
-          <div className="hidden items-center space-x-8 lg:flex xl:space-x-14">
+          <div className="hidden items-center space-x-6 lg:flex xl:space-x-10">
             {CATEGORIES.map((category, index) => (
               <motion.button
                 key={category.id}
@@ -517,6 +581,7 @@ function App() {
             >
               Shop
             </a>
+            <BrandMarkCard className="header-brand-card" />
           </div>
 
           <button
@@ -640,53 +705,73 @@ function App() {
                   style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
                   className="relative z-10"
                 >
-                  <img
-                    src={tosuMark}
-                    className="h-full w-full rounded-[3rem] bg-white/70 object-contain p-10 shadow-hero transition-all duration-1000 md:rounded-[5rem] md:p-16"
-                    alt="Touchy Subjects brand mark"
-                  />
+                  <div className="hero-ambient-card rounded-[3rem] shadow-hero md:rounded-[5rem]">
+                    <div className="hero-ambient-card__grid" />
+                    <div className="hero-ambient-card__core" />
+                    <div className="hero-ambient-card__ring hero-ambient-card__ring--one" />
+                    <div className="hero-ambient-card__ring hero-ambient-card__ring--two" />
+                    <div className="hero-ambient-card__ring hero-ambient-card__ring--three" />
+                    <img
+                      src={handsIsolated}
+                      alt=""
+                      aria-hidden="true"
+                      className="hero-ambient-card__hands"
+                    />
+                    <img
+                      src={iconTosuColor}
+                      alt=""
+                      aria-hidden="true"
+                      className="hero-ambient-card__seal"
+                    />
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
           </div>
         </section>
 
-        <Section className="relative z-10 border-y-4 border-black/[0.03] bg-white py-20 md:py-32">
+        <Section className="relative z-10 border-y-4 border-black/[0.03] bg-white/70 py-20 md:py-32">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5 xl:gap-10">
-              {CATEGORIES.map((category) => {
-                const Icon = category.icon;
-
-                return (
-                  <motion.button
-                    key={category.id}
-                    whileHover={{ y: -15, scale: 1.03 }}
-                    type="button"
-                    onClick={() => setCategory(category.id)}
-                    className={`group flex flex-col items-center rounded-[2.5rem] p-8 text-center transition-all duration-700 md:p-10 xl:rounded-[3.5rem] xl:p-12 ${
-                      activeCategory === category.id
-                        ? "bg-white shadow-2xl ring-1 ring-black/5"
-                        : "opacity-60 hover:bg-black/[0.03] hover:opacity-100"
-                    }`}
-                  >
-                    <div
-                      className="mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] transition-transform group-hover:rotate-12 md:h-24 md:w-24 md:rounded-[2rem]"
-                      style={{ backgroundColor: `${category.color}15`, color: category.color }}
+            <div className="category-liquid-panel">
+              <div aria-hidden="true" className="category-liquid-panel__veil" />
+              <div className="category-liquid-panel__content grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5 xl:gap-10">
+                {CATEGORIES.map((category) => {
+                  return (
+                    <motion.button
+                      key={category.id}
+                      whileHover={{ y: -15, scale: 1.03 }}
+                      type="button"
+                      onClick={() => setCategory(category.id)}
+                      className={`group relative z-10 flex flex-col items-center rounded-[2.5rem] p-8 text-center transition-all duration-700 md:p-10 xl:rounded-[3.5rem] xl:p-12 ${
+                        activeCategory === category.id
+                          ? "bg-white/95 shadow-2xl ring-1 ring-white/90"
+                          : "bg-white/72 opacity-100 shadow-[0_18px_45px_rgba(18,18,18,0.08)] ring-1 ring-white/70 backdrop-blur-xl hover:bg-white/84"
+                      }`}
                     >
-                      <Icon size={28} />
-                    </div>
-                    <span
-                      className="text-lg font-black uppercase tracking-[0.25em] md:text-xl"
-                      style={{ color: activeCategory === category.id ? category.color : "#121212" }}
-                    >
-                      {category.name}
-                    </span>
-                    <span className="mt-4 text-[0.68rem] font-black uppercase tracking-[0.3em] text-black/30 md:text-xs">
-                      {category.desc}
-                    </span>
-                  </motion.button>
-                );
-              })}
+                      <div
+                        className="relative z-10 mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] transition-transform group-hover:rotate-12 md:h-24 md:w-24 md:rounded-[2rem]"
+                        style={{ backgroundColor: `${category.color}18`, color: category.color }}
+                      >
+                        <img
+                          src={category.icon}
+                          alt=""
+                          aria-hidden="true"
+                          className="category-icon"
+                        />
+                      </div>
+                      <span
+                        className="relative z-10 text-lg font-black uppercase tracking-[0.25em] md:text-xl"
+                        style={{ color: activeCategory === category.id ? category.color : "#121212" }}
+                      >
+                        {category.name}
+                      </span>
+                      <span className="relative z-10 mt-4 text-[0.68rem] font-black uppercase tracking-[0.3em] text-black/60 md:text-xs">
+                        {category.desc}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </Section>
@@ -732,6 +817,7 @@ function App() {
               {filteredProducts.map((product) => {
                 const category = CATEGORIES.find((item) => item.id === product.category);
                 const categoryColor = category?.color ?? "#121212";
+                const categoryName = category?.name ?? product.category;
 
                 return (
                   <motion.article
@@ -764,7 +850,7 @@ function App() {
                     <div className="flex items-start justify-between gap-6 px-2 md:px-4 lg:px-6">
                       <div>
                         <span className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: categoryColor }}>
-                          {product.category}
+                          {categoryName}
                         </span>
                         <h3 className="mt-3 font-display text-3xl font-black uppercase tracking-[-0.07em]">
                           {product.name}
@@ -784,7 +870,7 @@ function App() {
 
         <Section id="story" className="relative z-10 overflow-hidden bg-white py-24 md:py-40 xl:py-64">
           <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-24 xl:gap-32">
-            <motion.div whileHover={{ scale: 1.02 }} className="group relative aspect-square overflow-hidden rounded-[3rem] shadow-2xl md:rounded-[5rem]">
+            <motion.div whileHover={{ scale: 1.02 }} className="group relative aspect-[16/10] overflow-hidden rounded-[3rem] shadow-2xl md:aspect-[5/4] md:rounded-[5rem]">
               <img
                 src={touchyWall}
                 className="h-full w-full object-cover"
@@ -802,6 +888,14 @@ function App() {
             </motion.div>
 
             <div>
+              <div className="mb-8 flex items-center gap-5">
+                <div className="story-brand-chip">
+                  <img src={iconTosuColor} alt="Touchy Subjects color symbol" className="story-brand-chip__mark" />
+                </div>
+                <div className="story-brand-chip story-brand-chip--hands">
+                  <img src={handsIsolated} alt="Touchy Subjects hands illustration" className="story-brand-chip__hands" />
+                </div>
+              </div>
               <h2 className="font-display text-6xl font-black uppercase leading-[0.85] tracking-[-0.1em] md:text-7xl xl:text-8xl">
                 Rooted in <br />
                 <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
@@ -829,6 +923,10 @@ function App() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-16 grid grid-cols-1 gap-14 md:mb-24 md:grid-cols-4 md:gap-12 xl:mb-32 xl:gap-20">
             <div>
+              <div className="mb-6 flex items-center gap-4 md:mb-8">
+                <img src={iconTosuColor} alt="" aria-hidden="true" className="footer-brand-mark" />
+                <img src={handsIsolated} alt="" aria-hidden="true" className="footer-hands-mark" />
+              </div>
               <span className="font-display text-4xl font-black uppercase leading-none tracking-[-0.08em] md:text-5xl">
                 Touchy <br />
                 Subjects
@@ -838,16 +936,21 @@ function App() {
               </p>
             </div>
 
-            {["Pillars", "Company", "Social"].map((title) => (
-              <div key={title}>
+            {footerSections.map((section) => (
+              <div key={section.title}>
                 <h4 className="mb-8 text-sm font-black uppercase tracking-[0.35em] text-white/35 md:mb-12">
-                  {title}
+                  {section.title}
                 </h4>
                 <ul className="space-y-5 md:space-y-8">
-                  {["Category One", "Category Two", "Category Three"].map((link) => (
-                    <li key={link}>
-                      <a href="#collection" className="text-lg font-bold text-white/45 transition-colors hover:text-white md:text-xl">
-                        {link}
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        target={link.href.startsWith("http") ? "_blank" : undefined}
+                        rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                        className="text-lg font-bold text-white/45 transition-colors hover:text-white md:text-xl"
+                      >
+                        {link.label}
                       </a>
                     </li>
                   ))}
