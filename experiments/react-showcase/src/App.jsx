@@ -16,6 +16,9 @@ import {
   Home as HomeIcon,
   Shirt
 } from "lucide-react";
+import heroPlaceholder from "../../../assets/images/placeholders/hero-placeholder.png";
+import productPlaceholder from "../../../assets/images/placeholders/product-placeholder.png";
+import generalPlaceholder from "../../../assets/images/placeholders/general-placeholder.png";
 
 const CATEGORIES = [
   {
@@ -62,8 +65,7 @@ const PRODUCTS = [
     name: "The Slider",
     price: "$85",
     desc: "Precision machined plates with adjustable magnetic tension.",
-    image:
-      "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800"
+    image: productPlaceholder
   },
   {
     id: 2,
@@ -71,8 +73,7 @@ const PRODUCTS = [
     name: "The Axis Ring",
     price: "$120",
     desc: "Matte black band with a rotating knurled copper cylinder.",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800"
+    image: productPlaceholder
   },
   {
     id: 3,
@@ -80,8 +81,7 @@ const PRODUCTS = [
     name: "The Pendulum Pen",
     price: "$95",
     desc: "Balanced rollerball with a silent, spinning cap.",
-    image:
-      "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=800"
+    image: productPlaceholder
   },
   {
     id: 4,
@@ -89,8 +89,7 @@ const PRODUCTS = [
     name: "The Lid",
     price: "$150",
     desc: "3lb charcoal velvet lap pillow weighted with glass microbeads.",
-    image:
-      "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&q=80&w=800"
+    image: productPlaceholder
   },
   {
     id: 5,
@@ -98,8 +97,7 @@ const PRODUCTS = [
     name: "Secret Hoodie",
     price: "$110",
     desc: "Heavyweight fleece with hidden friction loops.",
-    image:
-      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800"
+    image: productPlaceholder
   },
   {
     id: 6,
@@ -107,8 +105,7 @@ const PRODUCTS = [
     name: "The Topo Pad",
     price: "$75",
     desc: "Recycled leather mat with topographic ridges.",
-    image:
-      "https://images.unsplash.com/photo-1616412411311-594ddd7609f2?auto=format&fit=crop&q=80&w=800"
+    image: productPlaceholder
   }
 ];
 
@@ -558,7 +555,7 @@ function App() {
                   className="relative z-10"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=1000"
+                    src={heroPlaceholder}
                     className="h-full w-full rounded-[3rem] object-cover shadow-hero transition-all duration-1000 hover:grayscale-0 md:rounded-[5rem]"
                     alt="Touchy Subjects hero product"
                   />
@@ -703,7 +700,7 @@ function App() {
           <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-24 xl:gap-32">
             <motion.div whileHover={{ scale: 1.02 }} className="group relative aspect-square overflow-hidden rounded-[3rem] shadow-2xl md:rounded-[5rem]">
               <img
-                src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=1200"
+                src={generalPlaceholder}
                 className="h-full w-full object-cover"
                 alt="Kokomo creative heritage"
               />
