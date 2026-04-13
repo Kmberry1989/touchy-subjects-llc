@@ -720,18 +720,12 @@ function App() {
                   style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
                   className="relative z-10"
                 >
-                  <div className="hero-ambient-card rounded-[3rem] shadow-hero md:rounded-[5rem]">
+                  <div className="hero-ambient-card">
                     <div className="hero-ambient-card__grid" />
                     <div className="hero-ambient-card__core" />
                     <div className="hero-ambient-card__ring hero-ambient-card__ring--one" />
                     <div className="hero-ambient-card__ring hero-ambient-card__ring--two" />
                     <div className="hero-ambient-card__ring hero-ambient-card__ring--three" />
-                    <img
-                      src={handsIsolated}
-                      alt=""
-                      aria-hidden="true"
-                      className="hero-ambient-card__hands"
-                    />
                     <img
                       src={iconTosuColor}
                       alt=""
@@ -803,7 +797,7 @@ function App() {
               <h2 className="font-display text-6xl font-black uppercase leading-none tracking-[-0.1em] md:text-7xl xl:text-8xl">
                 Collection
               </h2>
-              <div className="mt-8 flex flex-wrap gap-2">
+              <div className="mt-8 flex flex-wrap items-center gap-2">
                 {CATEGORIES.map((category) => (
                   <motion.div
                     key={category.id}
@@ -812,6 +806,7 @@ function App() {
                     style={{ backgroundColor: category.color }}
                   />
                 ))}
+                <div className="header-swatch header-swatch--trail collection-swatch-trail" />
               </div>
             </div>
             <button
@@ -931,11 +926,7 @@ function App() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-16 grid grid-cols-1 gap-14 md:mb-24 md:grid-cols-2 md:gap-14 xl:mb-32 xl:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))] xl:gap-12">
             <div className="min-w-0">
-              <div className="mb-6 flex items-center gap-4 md:mb-8">
-                <img src={iconTosuColor} alt="" aria-hidden="true" className="footer-brand-mark" />
-                <img src={handsIsolated} alt="" aria-hidden="true" className="footer-hands-mark" />
-              </div>
-              <span className="font-display text-4xl font-black uppercase leading-none tracking-[-0.08em] md:text-5xl">
+              <span className="font-display text-3xl font-black uppercase leading-none tracking-[-0.08em] md:text-[2.75rem]">
                 Touchy <br />
                 Subjects
               </span>
@@ -989,6 +980,12 @@ function App() {
             </div>
           </div>
         </div>
+        <img
+          src={handsIsolated}
+          alt=""
+          aria-hidden="true"
+          className="footer-corner-hands"
+        />
       </footer>
     </div>
   );

@@ -96,6 +96,12 @@ canvas {
   background: #121212;
 }
 
+.collection-swatch-trail {
+  flex: 1 0 100%;
+  width: 100%;
+  min-width: 100%;
+}
+
 .interactive-link {
   position: relative;
   transition:
@@ -264,15 +270,11 @@ canvas {
 .hero-ambient-card {
   position: relative;
   aspect-ratio: 1;
-  overflow: hidden;
-  border: 1px solid rgba(18, 18, 18, 0.06);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.5)),
-    rgba(255, 255, 255, 0.68);
-  box-shadow:
-    0 50px 100px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(14px);
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .hero-ambient-card__grid,
@@ -324,21 +326,10 @@ canvas {
   inset: 36%;
 }
 
-.hero-ambient-card__hands {
-  position: absolute;
-  inset: 12%;
-  z-index: 1;
-  width: 76%;
-  height: 76%;
-  margin: auto;
-  opacity: 0.14;
-  filter: saturate(0) brightness(0.2);
-}
-
 .hero-ambient-card__seal {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   width: 32%;
   height: 32%;
   margin: auto;
@@ -443,15 +434,15 @@ canvas {
 
 .story-heritage-band__inner {
   position: relative;
-  min-height: min(74vh, 56rem);
+  display: flex;
+  justify-content: center;
   overflow: hidden;
 }
 
 .story-heritage-band__image {
-  position: absolute;
-  inset: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 100vh;
   object-fit: contain;
   background: #111;
 }
@@ -474,24 +465,20 @@ canvas {
   color: white;
 }
 
-.footer-brand-mark {
-  width: 3rem;
-  height: 3rem;
-  object-fit: contain;
-}
-
-.footer-hands-mark {
-  width: 4.2rem;
-  height: 2.8rem;
-  object-fit: contain;
-  opacity: 0.78;
-  filter: invert(1);
-}
-
 .footer-link {
   display: inline-block;
   line-height: 1.35;
   word-break: break-word;
+}
+
+.footer-corner-hands {
+  position: absolute;
+  left: clamp(1rem, 2.4vw, 2.5rem);
+  bottom: clamp(1rem, 2.4vw, 2.5rem);
+  width: clamp(7rem, 14vw, 12rem);
+  height: auto;
+  opacity: 0.95;
+  pointer-events: none;
 }
 
 .chroma-heading {
@@ -748,12 +735,20 @@ canvas {
     min-width: 3rem;
   }
 
+  .collection-swatch-trail {
+    min-width: 100%;
+  }
+
   .story-heritage-band__inner {
-    min-height: 28rem;
+    min-height: 0;
   }
 
   .story-heritage-band__copy {
     bottom: 1.2rem;
+  }
+
+  .footer-corner-hands {
+    width: 5.5rem;
   }
 }
 
