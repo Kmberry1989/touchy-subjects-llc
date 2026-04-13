@@ -1,0 +1,245 @@
+import React, { useRef, useState, useMemo } from "react";
+import { motion } from "framer-motion";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+
+const categories = {
+  wearable: "from-purple-500 to-pink-500",
+  focus: "from-blue-500 to-indigo-500",
+  utility: "from-green-500 to-lime-500",
+  experimental: "from-orange-500 to-red-500",
+};
+
+export default function TouchySubjectsSite() {
+  return (
+    <div className="min-h-screen bg-black text-white font-sans">
+      <Hero />
+      <CategoryBar />
+      <Products />
+      <Customizer />
+      <CTA />
+      <Footer />
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+      <FingerprintWebGL />
+
+      <motion.h1
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-6xl md:text-8xl font-bold relative z-10"
+      >
+        Touchy Subjects
+      </motion.h1>
+
+      <p className="mt-6 text-gray-400 max-w-xl relative z-10">
+        A system of tactile objects designed for focus, expression, and everyday interaction.
+      </p>
+
+      <div className="mt-10 relative z-10">
+        <Button>Explore</Button>
+      </div>
+    </section>
+  );
+}
+
+function FingerprintWebGL() {
+  return (
+    <div className="absolute inset-0 z-0">
+      <Canvas>
+        <FingerprintMesh />
+      </Canvas>
+    </div>
+  );
+}
+
+function FingerprintMesh() {
+  const mesh = useRef();
+
+  const uniforms = useMemo(() => ({
+    uTime: { value: 0 },
+    uMouse: { value: new THREE.Vector2(0, 0) },
+  }), []);
+
+  useFrame(({ mouse }) => {
+    if (mesh.current) {
+      mesh.current.material.uniforms.uMouse.value.set(mouse.x, mouse.y);
+      mesh.current.material.uniforms.uTime.value += 0.02;
+    }
+  });
+
+  return (
+    <mesh ref={mesh}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        uniforms={uniforms}
+        fragmentShader={`
+          precision mediump float;
+
+          uniform float uTime;
+          uniform vec2 uMouse;
+          varying vec2 vUv;
+
+          float fingerprint(vec2 uv) {
+            float d = length(uv);
+            float rings = sin(d * 40.0 - uTime * 2.0);
+            return rings;
+          }
+
+          void main() {
+            vec2 uv = vUv - 0.5;
+
+            float dist = distance(uv, uMouse * 0.5);
+            float pattern = fingerprint(uv + uMouse * 0.2);
+
+            float glow = 0.02 / abs(pattern + 0.001);
+
+            vec3 colorA = vec3(0.49, 0.23, 0.93);
+            vec3 colorB = vec3(0.15, 0.39, 0.92);
+            vec3 colorC = vec3(0.13, 0.77, 0.37);
+
+            vec3 color = mix(colorA, colorB, vUv.x);
+            color = mix(color, colorC, vUv.y);
+
+            color *= glow * (1.0 - dist);
+
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `}
+        vertexShader={`
+          varying vec2 vUv;
+
+          void main() {
+            vUv = uv;
+            gl_Position = vec4(position, 1.0);
+          }
+        `}
+      />
+    </mesh>
+  );
+}
+
+function CategoryBar() {
+  return (
+    <div className="flex justify-center gap-4 py-8">
+      {Object.keys(categories).map((key) => (
+        <div
+          key={key}
+          className={`px-4 py-2 rounded-full text-sm bg-gradient-to-r ${categories[key]} text-black font-medium`}
+        >
+          {key}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Products() {
+  const items = [
+    { name: "Worry Rosette Ring", type: "wearable" },
+    { name: "Pocket Labyrinth", type: "focus" },
+    { name: "Quiet Clicker", type: "focus" },
+    { name: "Key Halo", type: "utility" },
+    { name: "Zipper Bloom", type: "utility" },
+    { name: "Focus Dock", type: "experimental" },
+  ];
+
+  return (
+    <section className="py-20 px-6 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      {items.map((item, i) => (
+        <ProductCard key={i} {...item} />
+      ))}
+    </section>
+  );
+}
+
+function ProductCard({ name, type }) {
+  const gradient = categories[type];
+  const [style, setStyle] = useState({});
+
+  const handleMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateX = -(y - rect.height / 2) / 18;
+    const rotateY = (x - rect.width / 2) / 18;
+
+    setStyle({
+      transform: `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`,
+    });
+  };
+
+  return (
+    <div
+      onMouseMove={handleMove}
+      onMouseLeave={() => setStyle({ transform: "none" })}
+      style={style}
+      className="p-6 rounded-2xl bg-[#0A0A0A] border border-white/10 transition-transform duration-200"
+    >
+      <div className={`h-40 rounded-xl mb-4 bg-gradient-to-br ${gradient} opacity-40`} />
+      <h3 className="text-lg">{name}</h3>
+      <p className="text-sm text-gray-400">{type}</p>
+    </div>
+  );
+}
+
+function Customizer() {
+  const [color, setColor] = useState("from-purple-500 to-blue-500");
+
+  const options = [
+    "from-purple-500 to-blue-500",
+    "from-blue-500 to-green-500",
+    "from-orange-500 to-pink-500",
+  ];
+
+  return (
+    <section className="py-24 text-center">
+      <h2 className="text-4xl mb-6">Customize</h2>
+
+      <div className={`w-40 h-40 mx-auto rounded-2xl bg-gradient-to-br ${color}`} />
+
+      <div className="flex justify-center gap-4 mt-6">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => setColor(opt)}
+            className={`w-10 h-10 rounded-full bg-gradient-to-br ${opt}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CTA() {
+  return (
+    <section className="py-20 text-center">
+      <h2 className="text-4xl">Build Your Set</h2>
+      <p className="text-gray-400 mt-4">Modular. Personal. Intentional.</p>
+      <div className="mt-8">
+        <Button>Start</Button>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="py-10 text-center text-gray-500 text-sm">
+      © {new Date().getFullYear()} Touchy Subjects LLC
+    </footer>
+  );
+}
+
+function Button({ children }) {
+  return (
+    <button className="px-6 py-3 rounded-2xl bg-white text-black hover:scale-105 transition hover:bg-gradient-to-r hover:from-purple-500 hover:to-blue-500 hover:text-white">
+      {children}
+    </button>
+  );
+}
