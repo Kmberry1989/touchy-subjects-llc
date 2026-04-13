@@ -553,7 +553,8 @@ canvas {
   transition: transform 280ms ease, filter 280ms ease;
 }
 
-.group:hover .category-icon {
+.group:hover .category-icon,
+.category-icon.is-active {
   transform: scale(1.22);
   filter: none;
 }

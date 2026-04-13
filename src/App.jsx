@@ -847,7 +847,10 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.08 }}
                 whileHover={{ scale: 1.04, y: -1 }}
-                onClick={() => setCategory(category.id)}
+                onClick={() => {
+                  setCategory(category.id);
+                  document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
+                }}
                 className={`nav-button relative px-4 py-2.5 text-[0.62rem] font-black uppercase tracking-[0.22em] 2xl:text-xs ${
                   activeCategory === category.id ? "is-active" : ""
                 }`}
@@ -926,6 +929,7 @@ function App() {
                   onClick={() => {
                     setCategory(category.id);
                     setIsMenuOpen(false);
+                    document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" });
                   }}
                   className="text-left font-display text-5xl font-black uppercase tracking-[-0.08em] md:text-6xl"
                   style={{ color: category.color }}
@@ -1053,14 +1057,16 @@ function App() {
                       }`}
                     >
                       <div
-                        className="relative z-10 mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] transition-transform group-hover:rotate-12 md:h-24 md:w-24 md:rounded-[2rem]"
+                        className={`relative z-10 mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] transition-transform md:h-24 md:w-24 md:rounded-[2rem] ${
+                          activeCategory === category.id ? "rotate-12" : "group-hover:rotate-12"
+                        }`}
                         style={{ backgroundColor: `${category.color}18`, color: category.color }}
                       >
                         <img
                           src={category.icon}
                           alt=""
                           aria-hidden="true"
-                          className="category-icon"
+                          className={`category-icon ${activeCategory === category.id ? "is-active" : ""}`}
                         />
                       </div>
                       <span
