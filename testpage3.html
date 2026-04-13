@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touchy Subjects | Chroma Heading Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+        --bg: #07090f;
+        --bg-soft: #0d1220;
+        --text: #f5f7fb;
+        --mx: 50%;
+        --my: 50%;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "Manrope", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.18), transparent 24%),
+          radial-gradient(circle at 82% 20%, rgba(59, 130, 246, 0.18), transparent 22%),
+          radial-gradient(circle at 75% 78%, rgba(16, 185, 129, 0.14), transparent 22%),
+          linear-gradient(180deg, #05070c 0%, #090d15 42%, #060910 100%);
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 46px 46px;
+        opacity: 0.3;
+        mask-image: radial-gradient(circle at center, black 44%, transparent 100%);
+      }
+
+      .page {
+        position: relative;
+        width: min(1200px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 3rem 0 5rem;
+      }
+
+      .intro {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem 0 2rem;
+      }
+
+      .eyebrow {
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.6);
+      }
+
+      .intro p {
+        max-width: 42rem;
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: rgba(245, 247, 251, 0.72);
+      }
+
+      .stage {
+        position: relative;
+        display: grid;
+        gap: 1.25rem;
+        align-items: center;
+        min-height: calc(100svh - 12rem);
+        padding: clamp(1.5rem, 4vw, 3rem);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 2rem;
+        background:
+          linear-gradient(150deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+          linear-gradient(180deg, rgba(10, 13, 21, 0.9), rgba(9, 12, 19, 0.7));
+        box-shadow:
+          0 30px 100px rgba(3, 4, 8, 0.55),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .stage::before {
+        content: "";
+        position: absolute;
+        inset: -20%;
+        background:
+          radial-gradient(circle at 22% 22%, rgba(139, 92, 246, 0.22), transparent 18%),
+          radial-gradient(circle at 76% 26%, rgba(59, 130, 246, 0.2), transparent 18%),
+          radial-gradient(circle at 35% 82%, rgba(16, 185, 129, 0.16), transparent 18%),
+          radial-gradient(circle at 85% 78%, rgba(245, 158, 11, 0.16), transparent 16%),
+          radial-gradient(circle at 58% 58%, rgba(239, 68, 68, 0.13), transparent 15%);
+        filter: blur(30px);
+        pointer-events: none;
+      }
+
+      .swatch-row {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .swatch {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.65rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.78);
+        backdrop-filter: blur(12px);
+      }
+
+      .swatch::before {
+        content: "";
+        width: 0.72rem;
+        height: 0.72rem;
+        border-radius: 50%;
+        background: var(--swatch);
+        box-shadow: 0 0 16px color-mix(in srgb, var(--swatch) 70%, transparent);
+      }
+
+      .heading-stack {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .support-copy {
+        max-width: 36rem;
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: rgba(245, 247, 251, 0.7);
+      }
+
+      .chroma-heading {
+        --font-size: clamp(4rem, 12vw, 9.5rem);
+        position: relative;
+        display: inline-grid;
+        align-items: center;
+        width: max-content;
+        max-width: 100%;
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: var(--font-size);
+        line-height: 0.88;
+        letter-spacing: -0.08em;
+        text-transform: uppercase;
+        isolation: isolate;
+        filter:
+          drop-shadow(0 0 28px rgba(139, 92, 246, 0.08))
+          drop-shadow(0 0 32px rgba(59, 130, 246, 0.08))
+          drop-shadow(0 0 42px rgba(245, 158, 11, 0.06));
+      }
+
+      .chroma-heading--small {
+        --font-size: clamp(2.5rem, 8vw, 5rem);
+      }
+
+      .chroma-heading > span {
+        grid-area: 1 / 1;
+        white-space: nowrap;
+      }
+
+      .chroma-heading__base,
+      .chroma-heading__glow,
+      .chroma-heading__split,
+      .chroma-heading__specular {
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .chroma-heading__base {
+        background-image:
+          linear-gradient(
+            100deg,
+            rgba(255, 255, 255, 0.9) 0%,
+            rgba(255, 255, 255, 0.46) 10%,
+            var(--purple) 20%,
+            var(--blue) 38%,
+            var(--green) 54%,
+            var(--orange) 71%,
+            var(--red) 86%,
+            rgba(255, 255, 255, 0.88) 100%
+          );
+        background-size: 240% 100%;
+        animation: chromaShift 10s linear infinite;
+        filter: url(#heading-distortion);
+      }
+
+      .chroma-heading__glow {
+        background-image:
+          radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.95), transparent 18%),
+          linear-gradient(
+            90deg,
+            rgba(139, 92, 246, 0.95) 0%,
+            rgba(59, 130, 246, 0.95) 22%,
+            rgba(16, 185, 129, 0.92) 48%,
+            rgba(245, 158, 11, 0.95) 72%,
+            rgba(239, 68, 68, 0.95) 100%
+          );
+        background-size: 140% 140%, 220% 100%;
+        background-position: center center, 0% 50%;
+        mix-blend-mode: screen;
+        opacity: 0.62;
+        filter: blur(10px);
+        transform: translateZ(0);
+        animation: glowShift 13s linear infinite reverse;
+      }
+
+      .chroma-heading__split {
+        background-image:
+          linear-gradient(90deg, rgba(139, 92, 246, 0.84), rgba(59, 130, 246, 0.9) 32%, transparent 62%),
+          linear-gradient(90deg, transparent 22%, rgba(245, 158, 11, 0.84) 64%, rgba(239, 68, 68, 0.82) 100%);
+        mix-blend-mode: screen;
+        opacity: 0.72;
+        transform: translate(-0.012em, -0.01em);
+        animation: prismDrift 7.5s ease-in-out infinite alternate;
+      }
+
+      .chroma-heading__specular {
+        background-image:
+          linear-gradient(
+            110deg,
+            transparent 0%,
+            transparent 36%,
+            rgba(255, 255, 255, 0.05) 43%,
+            rgba(255, 255, 255, 0.95) 49%,
+            rgba(255, 255, 255, 0.08) 55%,
+            transparent 63%,
+            transparent 100%
+          );
+        background-size: 220% 100%;
+        mix-blend-mode: screen;
+        opacity: 0.95;
+        animation: shineSweep 5.5s ease-in-out infinite;
+      }
+
+      .chroma-heading::after {
+        content: "";
+        position: absolute;
+        inset: auto -6% -10% -6%;
+        height: 38%;
+        background:
+          radial-gradient(circle at center, rgba(59, 130, 246, 0.16), transparent 54%),
+          radial-gradient(circle at 35% 50%, rgba(139, 92, 246, 0.15), transparent 50%),
+          radial-gradient(circle at 70% 50%, rgba(239, 68, 68, 0.12), transparent 45%);
+        filter: blur(18px);
+        z-index: -1;
+      }
+
+      .caption-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .caption-card {
+        padding: 1rem 1rem 1.1rem;
+        border-radius: 1.2rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .caption-card strong {
+        display: block;
+        margin-bottom: 0.45rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.58);
+      }
+
+      .caption-card p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: rgba(245, 247, 251, 0.75);
+      }
+
+      @keyframes chromaShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 240% 50%;
+        }
+      }
+
+      @keyframes glowShift {
+        0% {
+          background-position: 50% 50%, 0% 50%;
+        }
+        100% {
+          background-position: 50% 50%, 220% 50%;
+        }
+      }
+
+      @keyframes shineSweep {
+        0%,
+        14% {
+          background-position: 160% 50%;
+        }
+        34%,
+        100% {
+          background-position: -60% 50%;
+        }
+      }
+
+      @keyframes prismDrift {
+        0% {
+          transform: translate(-0.018em, -0.012em);
+          opacity: 0.5;
+        }
+        100% {
+          transform: translate(0.014em, 0.014em);
+          opacity: 0.82;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .stage {
+          min-height: auto;
+          padding: 1.25rem;
+        }
+
+        .chroma-heading > span {
+          white-space: normal;
+        }
+
+        .caption-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="heading-distortion" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence
+          id="turbulence"
+          type="fractalNoise"
+          baseFrequency="0.006 0.012"
+          numOctaves="2"
+          seed="7"
+          result="noise"
+        />
+        <feDisplacementMap
+          id="displacement"
+          in="SourceGraphic"
+          in2="noise"
+          scale="18"
+          xChannelSelector="R"
+          yChannelSelector="B"
+        />
+      </filter>
+    </svg>
+
+    <main class="page">
+      <section class="intro">
+        <p class="eyebrow">Heading effect study inspired by chroma chrome shaders</p>
+        <p>
+          This is built specifically for headings: animated chroma fill, chrome-style highlight,
+          subtle displacement, and pointer-reactive shimmer using the Touchy Subjects palette.
+        </p>
+      </section>
+
+      <section class="stage">
+        <div class="swatch-row" aria-label="Palette">
+          <span class="swatch" style="--swatch:#8B5CF6">Purple</span>
+          <span class="swatch" style="--swatch:#3B82F6">Blue</span>
+          <span class="swatch" style="--swatch:#10B981">Green</span>
+          <span class="swatch" style="--swatch:#F59E0B">Orange</span>
+          <span class="swatch" style="--swatch:#EF4444">Red</span>
+        </div>
+
+        <div class="heading-stack">
+          <div class="chroma-heading" data-text="Touchy Subjects">
+            <span class="chroma-heading__base">Touchy Subjects</span>
+            <span class="chroma-heading__glow" aria-hidden="true">Touchy Subjects</span>
+            <span class="chroma-heading__split" aria-hidden="true">Touchy Subjects</span>
+            <span class="chroma-heading__specular" aria-hidden="true">Touchy Subjects</span>
+          </div>
+
+          <div class="chroma-heading chroma-heading--small" data-text="Beautiful Friction">
+            <span class="chroma-heading__base">Beautiful Friction</span>
+            <span class="chroma-heading__glow" aria-hidden="true">Beautiful Friction</span>
+            <span class="chroma-heading__split" aria-hidden="true">Beautiful Friction</span>
+            <span class="chroma-heading__specular" aria-hidden="true">Beautiful Friction</span>
+          </div>
+
+          <p class="support-copy">
+            Move the pointer across the panel. The highlight center follows the cursor, while the
+            turbulence filter keeps the fill from reading like flat gradient text.
+          </p>
+        </div>
+
+        <div class="caption-grid">
+          <div class="caption-card">
+            <strong>Fill</strong>
+            <p>Animated multi-stop gradient clipped into the letterforms with your five brand colors.</p>
+          </div>
+          <div class="caption-card">
+            <strong>Chrome</strong>
+            <p>Dedicated specular sweep layer to fake the polished metallic pass.</p>
+          </div>
+          <div class="caption-card">
+            <strong>Motion</strong>
+            <p>SVG turbulence and displacement tuned for headings instead of a full-screen shader plane.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const root = document.documentElement;
+      const stage = document.querySelector(".stage");
+      const turbulence = document.getElementById("turbulence");
+      const displacement = document.getElementById("displacement");
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (stage) {
+        stage.addEventListener("pointermove", (event) => {
+          const rect = stage.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+          root.style.setProperty("--mx", x.toFixed(2) + "%");
+          root.style.setProperty("--my", y.toFixed(2) + "%");
+        });
+      }
+
+      if (!prefersReducedMotion && turbulence && displacement) {
+        let frame = 0;
+
+        const animateFilter = () => {
+          frame += 1;
+          const t = frame * 0.012;
+          const freqX = 0.0058 + Math.sin(t * 0.9) * 0.0015;
+          const freqY = 0.011 + Math.cos(t * 0.72) * 0.0026;
+          const scale = 14 + Math.sin(t * 1.2) * 6;
+
+          turbulence.setAttribute("baseFrequency", freqX.toFixed(4) + " " + freqY.toFixed(4));
+          displacement.setAttribute("scale", scale.toFixed(2));
+
+          requestAnimationFrame(animateFilter);
+        };
+
+        animateFilter();
+      }
+    </script>
+  </body>
+</html>

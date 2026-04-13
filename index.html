@@ -674,6 +674,76 @@
         padding: 2.3rem 1.25rem 5rem;
       }
 
+      .experiments {
+        display: flex;
+        justify-content: center;
+        padding: 0 1.25rem 3.5rem;
+      }
+
+      .experiments__panel {
+        width: var(--content-width);
+        padding: 1.5rem;
+        border-radius: 2rem;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5)),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.08), rgba(239, 68, 68, 0.08));
+        box-shadow: 0 20px 70px rgba(57, 53, 84, 0.1);
+      }
+
+      .experiments__header {
+        display: grid;
+        gap: 0.55rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .experiments__header strong {
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(15, 23, 32, 0.58);
+      }
+
+      .experiments__header p {
+        max-width: 42rem;
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .experiments__links {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .experiments__link {
+        display: grid;
+        gap: 0.45rem;
+        padding: 1.15rem 1.2rem;
+        border-radius: 1.35rem;
+        background: rgba(255, 255, 255, 0.56);
+        box-shadow: 0 12px 45px rgba(57, 53, 84, 0.08);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+
+      .experiments__link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 60px rgba(57, 53, 84, 0.13);
+      }
+
+      .experiments__link strong {
+        font-size: 0.82rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .experiments__link span {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: rgba(15, 23, 32, 0.68);
+      }
+
       .cta__panel {
         width: var(--content-width);
         margin: 0 auto;
@@ -836,7 +906,8 @@
         }
 
         .section,
-        .cta {
+        .cta,
+        .experiments {
           padding-inline: 0.8rem;
         }
 
@@ -846,6 +917,10 @@
 
         .button {
           width: 100%;
+        }
+
+        .experiments__links {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -874,6 +949,7 @@
           <nav aria-label="Primary">
             <a href="#spectrum-lab">Palette</a>
             <a href="#motion-theory">Motion</a>
+            <a href="#experiments">Experiments</a>
             <a href="#launch">Build Notes</a>
             <button type="button" id="shuffle-button">Shuffle Field</button>
           </nav>
@@ -1101,6 +1177,32 @@
                 <span>SVG fingerprint marks</span>
                 <span>Color-reactive palette rail</span>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="experiments" id="experiments">
+          <div class="experiments__panel reveal">
+            <div class="experiments__header">
+              <strong>Experiments</strong>
+              <p>
+                Direct links to the three standalone studies in this folder so you can compare the
+                different effect directions side by side.
+              </p>
+            </div>
+            <div class="experiments__links">
+              <a class="experiments__link" href="./testpage1.html">
+                <strong style="color:#8B5CF6">Testpage 1</strong>
+                <span>Fingerprint-heavy concept study with stronger interactive motion language.</span>
+              </a>
+              <a class="experiments__link" href="./testpage2.html">
+                <strong style="color:#3B82F6">Testpage 2</strong>
+                <span>Alternate visual direction for the current experiments set.</span>
+              </a>
+              <a class="experiments__link" href="./testpage3.html">
+                <strong style="color:#EF4444">Testpage 3</strong>
+                <span>Chroma-chrome heading treatment using the Touchy Subjects palette.</span>
+              </a>
             </div>
           </div>
         </section>
