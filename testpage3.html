@@ -65,6 +65,25 @@
         padding: 3rem 0 5rem;
       }
 
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding-bottom: 1rem;
+      }
+
+      .topbar a,
+      .topbar span {
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: rgba(245, 247, 251, 0.66);
+      }
+
       .intro {
         display: grid;
         gap: 1rem;
@@ -405,6 +424,11 @@
     </svg>
 
     <main class="page">
+      <header class="topbar">
+        <a href="./index.html">Back to Gallery</a>
+        <span>Chroma Heading Study</span>
+      </header>
+
       <section class="intro">
         <p class="eyebrow">Heading effect study inspired by chroma chrome shaders</p>
         <p>

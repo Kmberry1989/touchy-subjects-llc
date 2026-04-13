@@ -744,6 +744,14 @@
         color: rgba(15, 23, 32, 0.68);
       }
 
+      .experiments__meta {
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(15, 23, 32, 0.46);
+      }
+
       .cta__panel {
         width: var(--content-width);
         margin: 0 auto;
@@ -1184,24 +1192,42 @@
         <section class="experiments" id="experiments">
           <div class="experiments__panel reveal">
             <div class="experiments__header">
-              <strong>Experiments</strong>
+              <strong>Options Gallery</strong>
               <p>
-                Direct links to the three standalone studies in this folder so you can compare the
-                different effect directions side by side.
+                Every local HTML file is now a viewable standalone page. Use this gallery to click
+                through the visual directions side by side.
               </p>
             </div>
             <div class="experiments__links">
+              <a class="experiments__link" href="./oldindex.html">
+                <strong style="color:#8B5CF6">Oldindex</strong>
+                <span>Archive editorial direction with warmer merchandising and calmer composition.</span>
+                <span class="experiments__meta">Archive / Commerce-ready</span>
+              </a>
               <a class="experiments__link" href="./testpage1.html">
                 <strong style="color:#8B5CF6">Testpage 1</strong>
-                <span>Fingerprint-heavy concept study with stronger interactive motion language.</span>
+                <span>Cursor fingerprint concept with the strongest direct interaction cue.</span>
+                <span class="experiments__meta">Interactive / Art-forward</span>
               </a>
               <a class="experiments__link" href="./testpage2.html">
                 <strong style="color:#3B82F6">Testpage 2</strong>
-                <span>Alternate visual direction for the current experiments set.</span>
+                <span>Full-screen fingerprint light field that keeps the layout minimal.</span>
+                <span class="experiments__meta">Immersive / Hero-led</span>
               </a>
               <a class="experiments__link" href="./testpage3.html">
                 <strong style="color:#EF4444">Testpage 3</strong>
                 <span>Chroma-chrome heading treatment using the Touchy Subjects palette.</span>
+                <span class="experiments__meta">Typography / Shader-inspired</span>
+              </a>
+              <a class="experiments__link" href="./testpage4.html">
+                <strong style="color:#10B981">Testpage 4</strong>
+                <span>Morphing ambient background option with softer color volumes.</span>
+                <span class="experiments__meta">Atmospheric / Liquid motion</span>
+              </a>
+              <a class="experiments__link" href="./testpageshaders.html">
+                <strong style="color:#F59E0B">Testpage Shaders</strong>
+                <span>Code-native shader sketchbook option built from the raw shader notes.</span>
+                <span class="experiments__meta">Experimental / Dev-facing</span>
               </a>
             </div>
           </div>

@@ -1,320 +1,326 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronRight, ShoppingBag, Eye, Move, Smartphone, PenTool, Home as HomeIcon, Shirt } from 'lucide-react';
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touchy Subjects | Archive Editorial Option</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+        --ink: #151515;
+        --paper: #f6f2eb;
+        --muted: rgba(21, 21, 21, 0.64);
+      }
 
-const App = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [scrolled, setScrolled] = useState(false);
+      * {
+        box-sizing: border-box;
+      }
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 10% 18%, rgba(139, 92, 246, 0.14), transparent 24%),
+          radial-gradient(circle at 82% 16%, rgba(59, 130, 246, 0.12), transparent 22%),
+          linear-gradient(180deg, #faf5ee 0%, #f4f0ea 100%);
+      }
 
-  const categories = [
-    { id: 'wear', name: 'Wear', icon: <ShoppingBag size={18} />, desc: 'Haptic Adornments' },
-    { id: 'desk', name: 'Desk', icon: <PenTool size={18} />, desc: 'Kinetic Professionalism' },
-    { id: 'home', name: 'Home', icon: <HomeIcon size={18} />, desc: 'Sensory Interior' },
-    { id: 'feel', name: 'Feel', icon: <Move size={18} />, desc: 'Tactile EDC' },
-    { id: 'thread', name: 'Thread', icon: <Shirt size={18} />, desc: 'Textile Architecture' },
-  ];
+      .shell {
+        width: min(1180px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 1rem 0 4rem;
+      }
 
-  const products = [
-    {
-      id: 1,
-      category: 'feel',
-      name: 'The Slider',
-      price: '$85',
-      desc: 'Precision machined gunmetal and bronze plates with adjustable magnetic tension.',
-      image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800',
-    },
-    {
-      id: 2,
-      category: 'wear',
-      name: 'The Axis Ring',
-      price: '$120',
-      desc: 'Matte black band with a rotating knurled copper cylinder.',
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800',
-    },
-    {
-      id: 3,
-      category: 'desk',
-      name: 'The Pendulum Pen',
-      price: '$95',
-      desc: 'Balanced rollerball with a silent, infinite-spin micro-bearing cap.',
-      image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=800',
-    },
-    {
-      id: 4,
-      category: 'home',
-      name: 'The Lid',
-      price: '$150',
-      desc: '3lb charcoal velvet lap pillow weighted with silent glass microbeads.',
-      image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&q=80&w=800',
-    },
-    {
-      id: 5,
-      category: 'thread',
-      name: 'Secret Seam Hoodie',
-      price: '$110',
-      desc: 'Heavyweight fleece featuring hidden high-friction loops inside the pockets.',
-      image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800',
-    },
-    {
-      id: 6,
-      category: 'desk',
-      name: 'The Topo Pad',
-      price: '$75',
-      desc: 'Recycled leather desk mat with embossed tactile topographic ridges.',
-      image: 'https://images.unsplash.com/photo-1616412411311-594ddd7609f2?auto=format&fit=crop&q=80&w=800',
-    }
-  ];
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0 2rem;
+      }
 
-  const filteredProducts = activeCategory === 'all' 
-    ? products 
-    : products.filter(p => p.category === activeCategory);
+      .topbar a,
+      .topbar span {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-decoration: none;
+      }
 
-  return (
-    <div className="min-h-screen bg-[#F5F5F3] text-[#1A1A1A] font-sans">
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'}`}>
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-tighter uppercase">Touchy Subjects</span>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-gray-500 -mt-1">LLC / Sensory Tools</span>
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+        gap: 2rem;
+        align-items: end;
+        min-height: 72svh;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        line-height: 0.92;
+        letter-spacing: -0.07em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(4rem, 10vw, 8.6rem);
+      }
+
+      .hero p,
+      .note,
+      .card p {
+        line-height: 1.8;
+        color: var(--muted);
+      }
+
+      .accent {
+        display: block;
+        background: linear-gradient(90deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.4rem;
+      }
+
+      .pill {
+        padding: 0.8rem 1rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 12px 35px rgba(31, 23, 48, 0.08);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .hero-visual {
+        position: relative;
+        min-height: 28rem;
+        border-radius: 2rem;
+        overflow: hidden;
+        background:
+          linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.28)),
+          radial-gradient(circle at 24% 25%, rgba(139, 92, 246, 0.28), transparent 24%),
+          radial-gradient(circle at 74% 22%, rgba(59, 130, 246, 0.24), transparent 24%),
+          radial-gradient(circle at 62% 76%, rgba(245, 158, 11, 0.22), transparent 24%),
+          linear-gradient(180deg, #efe9df, #ede5dc);
+        box-shadow: 0 35px 90px rgba(43, 35, 59, 0.12);
+      }
+
+      .hero-visual::before,
+      .hero-visual::after {
+        content: "";
+        position: absolute;
+        border-radius: 2.5rem;
+        inset: 12%;
+        border: 1px solid rgba(21, 21, 21, 0.08);
+      }
+
+      .hero-visual::after {
+        inset: 22%;
+      }
+
+      .hero-stack {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+      }
+
+      .hero-stack span {
+        font-family: "Syne", sans-serif;
+        font-size: clamp(2.5rem, 6vw, 5.5rem);
+        text-transform: uppercase;
+        letter-spacing: -0.08em;
+      }
+
+      .hero-stack span:nth-child(1) {
+        transform: translate(-12%, -12%);
+        color: var(--purple);
+      }
+
+      .hero-stack span:nth-child(2) {
+        color: var(--blue);
+      }
+
+      .hero-stack span:nth-child(3) {
+        transform: translate(14%, 14%);
+        color: var(--orange);
+      }
+
+      .section {
+        padding-top: 4rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        padding: 1.25rem;
+        border-radius: 1.6rem;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 16px 55px rgba(43, 35, 59, 0.08);
+      }
+
+      .card strong {
+        display: inline-flex;
+        margin-bottom: 0.7rem;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .products {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1.25rem;
+      }
+
+      .product {
+        padding: 1rem;
+        border-radius: 1.4rem;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: 0 16px 45px rgba(43, 35, 59, 0.08);
+      }
+
+      .product__image {
+        height: 10rem;
+        margin-bottom: 0.8rem;
+        border-radius: 1rem;
+        background:
+          radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--swatch) 62%, white), transparent 22%),
+          linear-gradient(160deg, rgba(255, 255, 255, 0.35), color-mix(in srgb, var(--swatch) 28%, #f1ece4));
+      }
+
+      .product h3 {
+        font-size: 1.6rem;
+      }
+
+      .product p {
+        margin: 0.6rem 0 0;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 960px) {
+        .hero,
+        .grid,
+        .products {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a href="./index.html">Back to Gallery</a>
+        <span>Archive Editorial Option</span>
+      </header>
+
+      <section class="hero">
+        <div>
+          <p class="topbar" style="padding:0; justify-content:flex-start"><span>Legacy direction</span></p>
+          <h1>
+            Tactile
+            <span class="accent">Objects</span>
+          </h1>
+          <p>
+            A quieter, warmer direction that leans editorial instead of reactive. This option is
+            useful if you want the brand to feel crafted, collectible, and easier to merchandise.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Wear</span>
+            <span class="pill">Feel</span>
+            <span class="pill">Home</span>
+            <span class="pill">Desk</span>
           </div>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex space-x-8 items-center">
-            {categories.map(cat => (
-              <button 
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`text-xs uppercase tracking-widest hover:text-orange-800 transition-colors ${activeCategory === cat.id ? 'text-orange-900 font-bold' : 'text-gray-600'}`}
-              >
-                {cat.name}
-              </button>
-            ))}
-            <div className="h-4 w-[1px] bg-gray-300 mx-2"></div>
-            <button className="bg-[#1A1A1A] text-white px-5 py-2 text-xs uppercase tracking-widest rounded-full hover:bg-gray-800 transition-all">
-              Shop All
-            </button>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
-      </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white flex flex-col items-center justify-center space-y-8">
-          {categories.map(cat => (
-            <button 
-              key={cat.id}
-              onClick={() => { setActiveCategory(cat.id); setIsMenuOpen(false); }}
-              className="text-2xl font-light uppercase tracking-widest"
-            >
-              {cat.name}
-            </button>
-          ))}
-          <button className="mt-8 text-sm uppercase tracking-widest underline underline-offset-4">Close</button>
-        </div>
-      )}
-
-      {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=2000" 
-            className="w-full h-full object-cover opacity-20"
-            alt="Minimalist background"
-          />
-        </div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-          <div className="max-w-2xl">
-            <h1 className="text-6xl md:text-8xl font-light leading-none tracking-tight mb-8">
-              Tactile tools <br />
-              <span className="italic font-serif">for the modern mind.</span>
-            </h1>
-            <p className="text-lg text-gray-600 mb-10 leading-relaxed font-light">
-              Elevated sensory regulation for the boardroom, the studio, and the home. Sophisticated designs for neurodivergent and fidgety folks who value aesthetics as much as focus.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-[#1A1A1A] text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center justify-center hover:bg-gray-800 transition-all">
-                Explore the Pillars <ChevronRight size={16} className="ml-2" />
-              </button>
-              <button className="border border-gray-300 px-8 py-4 text-sm uppercase tracking-widest flex items-center justify-center hover:bg-white transition-all">
-                The Science of Touch
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="absolute bottom-10 right-10 hidden lg:block">
-          <div className="flex flex-col items-end space-y-2 opacity-40">
-            <span className="text-[10px] uppercase tracking-widest rotate-90 origin-right translate-y-24 mb-24">Scroll to explore</span>
-            <div className="w-[1px] h-24 bg-black"></div>
+        <div class="hero-visual">
+          <div class="hero-stack">
+            <span>Touchy</span>
+            <span>Subjects</span>
+            <span>Studio</span>
           </div>
         </div>
       </section>
 
-      {/* Category Icons Bar */}
-      <section className="bg-white border-y border-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-            {categories.map(cat => (
-              <button 
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className="flex flex-col items-center group"
-              >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all ${activeCategory === cat.id ? 'bg-[#1A1A1A] text-white' : 'bg-gray-50 group-hover:bg-gray-100'}`}>
-                  {cat.icon}
-                </div>
-                <span className="text-[10px] uppercase tracking-widest font-bold">{cat.name}</span>
-                <span className="text-[9px] text-gray-400 uppercase tracking-tighter mt-1">{cat.desc}</span>
-              </button>
-            ))}
-          </div>
+      <section class="section">
+        <div class="grid">
+          <article class="card">
+            <strong>Why keep it</strong>
+            <h2>Editorial calm.</h2>
+            <p>It puts product language first and keeps the palette as controlled accents.</p>
+          </article>
+          <article class="card">
+            <strong>Best fit</strong>
+            <h2>Product launch.</h2>
+            <p>Good for a more commerce-ready site where the objects need room to breathe.</p>
+          </article>
+          <article class="card">
+            <strong>Risk</strong>
+            <h2>Lower drama.</h2>
+            <p>It is cleaner, but it does not hit as hard as the shader and chroma concepts.</p>
+          </article>
         </div>
       </section>
 
-      {/* Product Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="flex justify-between items-end mb-16">
-          <div>
-            <h2 className="text-3xl font-light uppercase tracking-tight">The Collection</h2>
-            <div className="w-12 h-1 bg-orange-900 mt-2"></div>
-          </div>
-          <button 
-            onClick={() => setActiveCategory('all')}
-            className={`text-[10px] uppercase tracking-[0.2em] font-bold ${activeCategory === 'all' ? 'text-orange-900' : 'text-gray-400'}`}
-          >
-            View All
-          </button>
+      <section class="section">
+        <div class="topbar" style="padding:0; justify-content:space-between">
+          <span>Sample product wall</span>
+          <a href="./testpage3.html">Compare with heading study</a>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
-          {filteredProducts.map(product => (
-            <div key={product.id} className="group cursor-pointer">
-              <div className="relative aspect-[4/5] overflow-hidden bg-gray-200 mb-6">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <div className="bg-white p-2 rounded-full shadow-lg">
-                      <Eye size={16} />
-                   </div>
-                </div>
-                <div className="absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform bg-white/90 backdrop-blur-md">
-                   <button className="w-full text-[10px] uppercase tracking-widest font-bold py-2">Quick Add</button>
-                </div>
-              </div>
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-sm uppercase tracking-widest font-bold mb-1">{product.name}</h3>
-                  <p className="text-xs text-gray-500 font-light max-w-[200px] leading-relaxed">{product.desc}</p>
-                </div>
-                <span className="text-sm font-light">{product.price}</span>
-              </div>
-            </div>
-          ))}
+        <div class="products">
+          <article class="product" style="--swatch:#8B5CF6">
+            <div class="product__image"></div>
+            <h3>Axis Ring</h3>
+            <p>Soft violet ridge cues and jewelry-like framing.</p>
+          </article>
+          <article class="product" style="--swatch:#3B82F6">
+            <div class="product__image"></div>
+            <h3>Quiet Clicker</h3>
+            <p>Cooler technical tone for the focus utility category.</p>
+          </article>
+          <article class="product" style="--swatch:#10B981">
+            <div class="product__image"></div>
+            <h3>Topo Pad</h3>
+            <p>Material-first merchandising with a cleaner background.</p>
+          </article>
+          <article class="product" style="--swatch:#F59E0B">
+            <div class="product__image"></div>
+            <h3>Pendulum Pen</h3>
+            <p>Warmer highlight treatment for hero product tiles.</p>
+          </article>
         </div>
       </section>
-
-      {/* Local Heritage / Mission Section */}
-      <section className="bg-[#1A1A1A] text-white py-32 overflow-hidden relative">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
-          <div className="relative z-10">
-            <span className="text-orange-400 text-[10px] uppercase tracking-[0.3em] font-bold mb-6 block">Our Heritage</span>
-            <h2 className="text-5xl font-light mb-8 leading-tight">Rooted in the <span className="italic font-serif">Kokomo Art Scene.</span></h2>
-            <p className="text-gray-400 font-light leading-relaxed mb-8">
-              Touchy Subjects LLC was born from a deep appreciation for craft and community. Partnered with the Kokomo Art Association and Artworks Gallery, we believe that sensory tools are an extension of artistic expression. 
-            </p>
-            <p className="text-gray-400 font-light leading-relaxed mb-12 italic">
-              "We don't just build objects; we curate experiences for the restless mind."
-            </p>
-            <button className="border border-white/20 px-8 py-4 text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-              Learn Our Story
-            </button>
-          </div>
-          <div className="relative aspect-square md:aspect-auto md:h-[600px] bg-gray-800">
-             <div className="absolute inset-0 bg-gradient-to-br from-orange-900/20 to-transparent z-10"></div>
-             <img 
-               src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=1000" 
-               className="w-full h-full object-cover opacity-60"
-               alt="Library/Studio"
-             />
-             <div className="absolute -bottom-10 -left-10 bg-white text-black p-10 hidden lg:block z-20">
-                <span className="text-4xl font-serif italic">10%</span>
-                <p className="text-[10px] uppercase tracking-widest font-bold max-w-[120px] mt-2 leading-tight">
-                  of all proceeds support local art education.
-                </p>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-[#F5F5F3] py-20 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-            <div className="md:col-span-1">
-               <div className="flex flex-col mb-6">
-                <span className="text-xl font-bold tracking-tighter uppercase">Touchy Subjects</span>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-gray-500 -mt-1">LLC</span>
-              </div>
-              <p className="text-xs text-gray-500 leading-relaxed font-light">
-                Tactile tools designed to regulate the nervous system and ground the mind without sacrificing style.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="text-[10px] uppercase tracking-widest font-bold mb-6">Shop</h4>
-              <ul className="space-y-4">
-                {categories.map(cat => (
-                  <li key={cat.id}><a href="#" className="text-xs text-gray-500 hover:text-black transition-colors">{cat.name}</a></li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-[10px] uppercase tracking-widest font-bold mb-6">Company</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-xs text-gray-500 hover:text-black transition-colors">Our Story</a></li>
-                <li><a href="#" className="text-xs text-gray-500 hover:text-black transition-colors">The Science</a></li>
-                <li><a href="#" className="text-xs text-gray-500 hover:text-black transition-colors">Retailers</a></li>
-                <li><a href="#" className="text-xs text-gray-500 hover:text-black transition-colors">Contact</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-[10px] uppercase tracking-widest font-bold mb-6">Connect</h4>
-              <ul className="space-y-4">
-                <li><a href="https://www.instagram.com/kokomoartassociation" className="text-xs text-gray-500 hover:text-black transition-colors">Instagram</a></li>
-                <li><a href="https://www.facebook.com/KokomoArtAssociation" className="text-xs text-gray-500 hover:text-black transition-colors">Facebook</a></li>
-                <li><a href="#" className="text-xs text-gray-500 hover:text-black transition-colors">Newsletter</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="pt-12 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-gray-400">
-            <span>&copy; 2024 Touchy Subjects LLC. All Rights Reserved.</span>
-            <div className="flex space-x-8 mt-4 md:mt-0">
-              <a href="#" className="hover:text-black">Privacy</a>
-              <a href="#" className="hover:text-black">Terms</a>
-              <a href="#" className="hover:text-black">Accessibility</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-};
-
-export default App;
+    </main>
+  </body>
+</html>

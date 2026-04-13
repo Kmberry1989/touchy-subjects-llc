@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touchy Subjects | Morphing Background Option</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: #f6f7fb;
+        background: #04070e;
+        overflow-x: hidden;
+      }
+
+      #morph {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .shell {
+        position: relative;
+        z-index: 2;
+        width: min(1160px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 1rem 0 4rem;
+      }
+
+      .topbar,
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 1rem 0;
+      }
+
+      .topbar a,
+      .topbar span,
+      .footer span {
+        color: rgba(246, 247, 251, 0.68);
+        text-decoration: none;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        min-height: 82svh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+        gap: 2rem;
+        align-items: center;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        letter-spacing: -0.08em;
+        text-transform: uppercase;
+        line-height: 0.9;
+      }
+
+      h1 {
+        font-size: clamp(4rem, 11vw, 9.2rem);
+      }
+
+      .gradient {
+        display: block;
+        color: transparent;
+        background: linear-gradient(90deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      p {
+        max-width: 34rem;
+        line-height: 1.8;
+        color: rgba(246, 247, 251, 0.74);
+      }
+
+      .panel {
+        padding: 1.3rem;
+        border-radius: 1.8rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(20px);
+      }
+
+      .stack {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .stack strong {
+        display: block;
+        margin-bottom: 0.55rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(246, 247, 251, 0.58);
+      }
+
+      @media (max-width: 920px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="morph" aria-hidden="true"></canvas>
+
+    <main class="shell">
+      <header class="topbar">
+        <a href="./index.html">Back to Gallery</a>
+        <span>Morphing Background Option</span>
+      </header>
+
+      <section class="hero">
+        <div>
+          <h1>
+            Liquid
+            <span class="gradient">volume.</span>
+          </h1>
+          <p>
+            This direction swaps fingerprint ridges for a softer morphing color mass. It keeps the
+            same palette but reads more like an ambient installation than a tactile diagram.
+          </p>
+        </div>
+
+        <aside class="stack">
+          <article class="panel">
+            <strong>Best fit</strong>
+            <h2>More atmospheric.</h2>
+            <p>Good if you want motion and color without the forensic feel of the fingerprint motif.</p>
+          </article>
+          <article class="panel">
+            <strong>Strength</strong>
+            <h2>Cleaner with copy.</h2>
+            <p>The backdrop feels active, but the forms stay broad enough to avoid visual noise.</p>
+          </article>
+          <article class="panel">
+            <strong>Tradeoff</strong>
+            <h2>Less ownable.</h2>
+            <p>It is beautiful, but the fingerprint system is more distinctive to this brand.</p>
+          </article>
+        </aside>
+      </section>
+
+      <footer class="footer">
+        <span>Ambient shader-style option</span>
+        <span>Touchy Subjects LLC</span>
+      </footer>
+    </main>
+
+    <script>
+      const canvas = document.getElementById("morph");
+      const ctx = canvas.getContext("2d");
+      const blobs = [
+        { color: "#8B5CF6", x: 0.2, y: 0.24, r: 220, sx: 0.0008, sy: 0.0006 },
+        { color: "#3B82F6", x: 0.8, y: 0.18, r: 200, sx: 0.0007, sy: 0.0009 },
+        { color: "#10B981", x: 0.66, y: 0.72, r: 210, sx: 0.0009, sy: 0.0007 },
+        { color: "#F59E0B", x: 0.3, y: 0.76, r: 190, sx: 0.0011, sy: 0.0008 },
+        { color: "#EF4444", x: 0.54, y: 0.46, r: 160, sx: 0.0006, sy: 0.001 }
+      ];
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(window.innerWidth * dpr);
+        canvas.height = Math.round(window.innerHeight * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function draw(time) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#04070e";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.globalCompositeOperation = "lighter";
+        blobs.forEach((blob, index) => {
+          const x = w * blob.x + Math.sin(time * blob.sx + index) * 90;
+          const y = h * blob.y + Math.cos(time * blob.sy + index * 1.2) * 80;
+          const gradient = ctx.createRadialGradient(x, y, 0, x, y, blob.r * 1.3);
+          gradient.addColorStop(0, blob.color + "aa");
+          gradient.addColorStop(0.45, blob.color + "33");
+          gradient.addColorStop(1, blob.color + "00");
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(x, y, blob.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalCompositeOperation = "source-over";
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+      requestAnimationFrame(draw);
+    </script>
+  </body>
+</html>

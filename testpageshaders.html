@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touchy Subjects | Shader Notes Option</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Mono", monospace;
+        color: #eef4ff;
+        background:
+          radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.12), transparent 24%),
+          linear-gradient(180deg, #05070d 0%, #090d16 100%);
+      }
+
+      .shell {
+        width: min(1160px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 1rem 0 4rem;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 1rem 0 2rem;
+      }
+
+      .topbar a,
+      .topbar span {
+        color: rgba(238, 244, 255, 0.66);
+        text-decoration: none;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+        gap: 1rem;
+      }
+
+      .panel,
+      .preview {
+        border-radius: 1.7rem;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+      }
+
+      .panel {
+        padding: 1.2rem;
+      }
+
+      .panel h1,
+      .panel h2 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: -0.07em;
+      }
+
+      .panel h1 {
+        font-size: clamp(2.8rem, 7vw, 5.5rem);
+        line-height: 0.92;
+      }
+
+      .code {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 1.1rem;
+        background: rgba(0, 0, 0, 0.35);
+        color: rgba(238, 244, 255, 0.86);
+        line-height: 1.8;
+        white-space: pre-wrap;
+      }
+
+      .preview {
+        position: relative;
+        min-height: 34rem;
+      }
+
+      .preview::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.9), transparent 22%),
+          radial-gradient(circle at 78% 24%, rgba(59, 130, 246, 0.85), transparent 22%),
+          radial-gradient(circle at 52% 50%, rgba(16, 185, 129, 0.8), transparent 20%),
+          radial-gradient(circle at 30% 78%, rgba(245, 158, 11, 0.82), transparent 18%),
+          radial-gradient(circle at 76% 76%, rgba(239, 68, 68, 0.78), transparent 18%);
+        filter: blur(26px);
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+
+      .preview::after {
+        content: "";
+        position: absolute;
+        inset: 14%;
+        border-radius: 50%;
+        background:
+          conic-gradient(from 0deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red), var(--purple));
+        filter: blur(42px);
+        mix-blend-mode: screen;
+        opacity: 0.74;
+        animation: spin 18s linear infinite;
+      }
+
+      .preview__ring {
+        position: absolute;
+        inset: 12%;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow:
+          inset 0 0 60px rgba(255, 255, 255, 0.06),
+          0 0 90px rgba(59, 130, 246, 0.12);
+      }
+
+      .preview__ring:nth-child(2) {
+        inset: 24%;
+      }
+
+      .preview__ring:nth-child(3) {
+        inset: 35%;
+      }
+
+      @keyframes drift {
+        0% { transform: translate(-3%, -2%) scale(1); }
+        100% { transform: translate(3%, 2%) scale(1.08); }
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 920px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a href="./index.html">Back to Gallery</a>
+        <span>Shader Notes Option</span>
+      </header>
+
+      <section class="layout">
+        <article class="panel">
+          <h1>Shader sketchbook.</h1>
+          <p>
+            This option turns the raw shader note into a presentable concept page. It is useful if
+            you want a more code-native, experimental mood in the gallery.
+          </p>
+          <div class="code">let s = getRayDirection()
+color(s * .2)
+rotateX(s.x * 10.)
+displace(0., sin(s.x * 10. + time) * .5, 0.)
+
+box(vec3(0.5))
+expand(.2)</div>
+        </article>
+
+        <div class="preview">
+          <div class="preview__ring"></div>
+          <div class="preview__ring"></div>
+          <div class="preview__ring"></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

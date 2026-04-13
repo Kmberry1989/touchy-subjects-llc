@@ -1,245 +1,279 @@
-import React, { useRef, useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touchy Subjects | Fingerprint Field Option</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+      }
 
-const categories = {
-  wearable: "from-purple-500 to-pink-500",
-  focus: "from-blue-500 to-indigo-500",
-  utility: "from-green-500 to-lime-500",
-  experimental: "from-orange-500 to-red-500",
-};
+      * {
+        box-sizing: border-box;
+      }
 
-export default function TouchySubjectsSite() {
-  return (
-    <div className="min-h-screen bg-black text-white font-sans">
-      <Hero />
-      <CategoryBar />
-      <Products />
-      <Customizer />
-      <CTA />
-      <Footer />
-    </div>
-  );
-}
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: #f5f7fb;
+        background: #04060b;
+      }
 
-function Hero() {
-  return (
-    <section className="h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
-      <FingerprintWebGL />
+      #field {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
 
-      <motion.h1
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-6xl md:text-8xl font-bold relative z-10"
-      >
-        Touchy Subjects
-      </motion.h1>
+      .shell {
+        position: relative;
+        z-index: 2;
+        width: min(1180px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 1rem 0 4rem;
+      }
 
-      <p className="mt-6 text-gray-400 max-w-xl relative z-10">
-        A system of tactile objects designed for focus, expression, and everyday interaction.
-      </p>
+      .topbar,
+      .palette {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
 
-      <div className="mt-10 relative z-10">
-        <Button>Explore</Button>
-      </div>
-    </section>
-  );
-}
+      .topbar {
+        padding: 1rem 0 2rem;
+      }
 
-function FingerprintWebGL() {
-  return (
-    <div className="absolute inset-0 z-0">
-      <Canvas>
-        <FingerprintMesh />
-      </Canvas>
-    </div>
-  );
-}
+      .topbar a,
+      .topbar span {
+        color: rgba(245, 247, 251, 0.66);
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+      }
 
-function FingerprintMesh() {
-  const mesh = useRef();
+      .hero {
+        min-height: 82svh;
+        display: grid;
+        align-content: center;
+        gap: 1.1rem;
+      }
 
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uMouse: { value: new THREE.Vector2(0, 0) },
-  }), []);
+      h1,
+      h2 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        letter-spacing: -0.08em;
+        text-transform: uppercase;
+        line-height: 0.9;
+      }
 
-  useFrame(({ mouse }) => {
-    if (mesh.current) {
-      mesh.current.material.uniforms.uMouse.value.set(mouse.x, mouse.y);
-      mesh.current.material.uniforms.uTime.value += 0.02;
-    }
-  });
+      h1 {
+        font-size: clamp(4rem, 11vw, 9.2rem);
+      }
 
-  return (
-    <mesh ref={mesh}>
-      <planeGeometry args={[2, 2]} />
-      <shaderMaterial
-        uniforms={uniforms}
-        fragmentShader={`
-          precision mediump float;
+      .gradient {
+        display: block;
+        color: transparent;
+        background: linear-gradient(90deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
 
-          uniform float uTime;
-          uniform vec2 uMouse;
-          varying vec2 vUv;
+      p {
+        max-width: 40rem;
+        margin: 0;
+        line-height: 1.8;
+        color: rgba(245, 247, 251, 0.74);
+      }
 
-          float fingerprint(vec2 uv) {
-            float d = length(uv);
-            float rings = sin(d * 40.0 - uTime * 2.0);
-            return rings;
-          }
+      .palette {
+        margin-top: 1.5rem;
+      }
 
-          void main() {
-            vec2 uv = vUv - 0.5;
+      .chip {
+        padding: 0.85rem 1rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        backdrop-filter: blur(14px);
+      }
 
-            float dist = distance(uv, uMouse * 0.5);
-            float pattern = fingerprint(uv + uMouse * 0.2);
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
 
-            float glow = 0.02 / abs(pattern + 0.001);
+      .card {
+        padding: 1.2rem;
+        border-radius: 1.45rem;
+        background: rgba(5, 8, 15, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(12px);
+      }
 
-            vec3 colorA = vec3(0.49, 0.23, 0.93);
-            vec3 colorB = vec3(0.15, 0.39, 0.92);
-            vec3 colorC = vec3(0.13, 0.77, 0.37);
+      .card strong {
+        display: block;
+        margin-bottom: 0.65rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.58);
+      }
 
-            vec3 color = mix(colorA, colorB, vUv.x);
-            color = mix(color, colorC, vUv.y);
+      @media (max-width: 920px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="field" aria-hidden="true"></canvas>
 
-            color *= glow * (1.0 - dist);
+    <main class="shell">
+      <header class="topbar">
+        <a href="./index.html">Back to Gallery</a>
+        <span>Fingerprint Field Option</span>
+      </header>
 
-            gl_FragColor = vec4(color, 1.0);
-          }
-        `}
-        vertexShader={`
-          varying vec2 vUv;
-
-          void main() {
-            vUv = uv;
-            gl_Position = vec4(position, 1.0);
-          }
-        `}
-      />
-    </mesh>
-  );
-}
-
-function CategoryBar() {
-  return (
-    <div className="flex justify-center gap-4 py-8">
-      {Object.keys(categories).map((key) => (
-        <div
-          key={key}
-          className={`px-4 py-2 rounded-full text-sm bg-gradient-to-r ${categories[key]} text-black font-medium`}
-        >
-          {key}
+      <section class="hero">
+        <h1>
+          Chroma
+          <span class="gradient">field.</span>
+        </h1>
+        <p>
+          This is the most direct translation of the fingerprint-light-field idea. It keeps the
+          page lean and lets moving rings carry the atmosphere instead of more layout chrome.
+        </p>
+        <div class="palette">
+          <span class="chip" style="color:#8B5CF6">Purple</span>
+          <span class="chip" style="color:#3B82F6">Blue</span>
+          <span class="chip" style="color:#10B981">Green</span>
+          <span class="chip" style="color:#F59E0B">Orange</span>
+          <span class="chip" style="color:#EF4444">Red</span>
         </div>
-      ))}
-    </div>
-  );
-}
+      </section>
 
-function Products() {
-  const items = [
-    { name: "Worry Rosette Ring", type: "wearable" },
-    { name: "Pocket Labyrinth", type: "focus" },
-    { name: "Quiet Clicker", type: "focus" },
-    { name: "Key Halo", type: "utility" },
-    { name: "Zipper Bloom", type: "utility" },
-    { name: "Focus Dock", type: "experimental" },
-  ];
+      <section class="grid">
+        <article class="card">
+          <strong>Read</strong>
+          <h2>Most immersive.</h2>
+          <p>The background does the heavy lifting without needing decorative section treatments.</p>
+        </article>
+        <article class="card">
+          <strong>Best fit</strong>
+          <h2>Hero-led homepage.</h2>
+          <p>Use it when the first viewport should feel expensive and reactive immediately.</p>
+        </article>
+        <article class="card">
+          <strong>Tradeoff</strong>
+          <h2>Less product-first.</h2>
+          <p>The effect is stronger than the merchandising, so it needs discipline in later sections.</p>
+        </article>
+      </section>
+    </main>
 
-  return (
-    <section className="py-20 px-6 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      {items.map((item, i) => (
-        <ProductCard key={i} {...item} />
-      ))}
-    </section>
-  );
-}
+    <script>
+      const canvas = document.getElementById("field");
+      const ctx = canvas.getContext("2d");
+      const colors = ["#8B5CF6", "#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+      const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
 
-function ProductCard({ name, type }) {
-  const gradient = categories[type];
-  const [style, setStyle] = useState({});
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(window.innerWidth * dpr);
+        canvas.height = Math.round(window.innerHeight * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
 
-  const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+      function rgba(hex, alpha) {
+        const value = hex.slice(1);
+        const r = parseInt(value.slice(0, 2), 16);
+        const g = parseInt(value.slice(2, 4), 16);
+        const b = parseInt(value.slice(4, 6), 16);
+        return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+      }
 
-    const rotateX = -(y - rect.height / 2) / 18;
-    const rotateY = (x - rect.width / 2) / 18;
+      function drawFingerprint(cx, cy, radius, color, time, seed) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(Math.sin(time * 0.00018 + seed) * 0.12);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
 
-    setStyle({
-      transform: `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`,
-    });
-  };
+        for (let i = 0; i < 11; i += 1) {
+          const rx = radius - i * 14;
+          const ry = radius * 1.18 - i * 14.5;
+          ctx.beginPath();
+          for (let step = 0; step <= 110; step += 1) {
+            const t = Math.PI * 0.16 + (Math.PI * 1.66 * step) / 110;
+            const wave = Math.sin(t * 3.4 + seed + i * 0.4 + time * 0.0013) * 6;
+            const x = Math.cos(t) * (rx + wave) + Math.sin(t * 1.1 + seed) * 12;
+            const y = Math.sin(t) * (ry - wave * 0.4) - Math.pow(Math.abs(Math.cos(t)), 2.2) * 16;
+            if (step === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = rgba(color, 0.06 + (10 - i) * 0.018);
+          ctx.lineWidth = 1 + (10 - i) * 0.08;
+          ctx.stroke();
+        }
 
-  return (
-    <div
-      onMouseMove={handleMove}
-      onMouseLeave={() => setStyle({ transform: "none" })}
-      style={style}
-      className="p-6 rounded-2xl bg-[#0A0A0A] border border-white/10 transition-transform duration-200"
-    >
-      <div className={`h-40 rounded-xl mb-4 bg-gradient-to-br ${gradient} opacity-40`} />
-      <h3 className="text-lg">{name}</h3>
-      <p className="text-sm text-gray-400">{type}</p>
-    </div>
-  );
-}
+        ctx.restore();
+      }
 
-function Customizer() {
-  const [color, setColor] = useState("from-purple-500 to-blue-500");
+      function frame(time) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        pointer.x += (pointer.tx - pointer.x) * 0.05;
+        pointer.y += (pointer.ty - pointer.y) * 0.05;
+        ctx.clearRect(0, 0, w, h);
+        const positions = [
+          [w * 0.18, h * 0.26, 180, 0],
+          [w * 0.78, h * 0.2, 160, 1.3],
+          [w * 0.36, h * 0.75, 140, 2.2],
+          [w * 0.76, h * 0.72, 138, 3.1],
+          [w * (0.5 + (pointer.x - 0.5) * 0.08), h * (0.5 + (pointer.y - 0.5) * 0.06), 115, 4.3]
+        ];
 
-  const options = [
-    "from-purple-500 to-blue-500",
-    "from-blue-500 to-green-500",
-    "from-orange-500 to-pink-500",
-  ];
+        positions.forEach((item, index) => {
+          drawFingerprint(item[0], item[1], item[2], colors[index], time, item[3]);
+        });
 
-  return (
-    <section className="py-24 text-center">
-      <h2 className="text-4xl mb-6">Customize</h2>
+        requestAnimationFrame(frame);
+      }
 
-      <div className={`w-40 h-40 mx-auto rounded-2xl bg-gradient-to-br ${color}`} />
+      window.addEventListener("resize", resize);
+      window.addEventListener("pointermove", (event) => {
+        pointer.tx = event.clientX / window.innerWidth;
+        pointer.ty = event.clientY / window.innerHeight;
+      });
 
-      <div className="flex justify-center gap-4 mt-6">
-        {options.map((opt) => (
-          <button
-            key={opt}
-            onClick={() => setColor(opt)}
-            className={`w-10 h-10 rounded-full bg-gradient-to-br ${opt}`}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CTA() {
-  return (
-    <section className="py-20 text-center">
-      <h2 className="text-4xl">Build Your Set</h2>
-      <p className="text-gray-400 mt-4">Modular. Personal. Intentional.</p>
-      <div className="mt-8">
-        <Button>Start</Button>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="py-10 text-center text-gray-500 text-sm">
-      © {new Date().getFullYear()} Touchy Subjects LLC
-    </footer>
-  );
-}
-
-function Button({ children }) {
-  return (
-    <button className="px-6 py-3 rounded-2xl bg-white text-black hover:scale-105 transition hover:bg-gradient-to-r hover:from-purple-500 hover:to-blue-500 hover:text-white">
-      {children}
-    </button>
-  );
-}
+      resize();
+      requestAnimationFrame(frame);
+    </script>
+  </body>
+</html>

@@ -1,387 +1,263 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useSpring, useTransform, AnimatePresence, useMotionValue } from 'framer-motion';
-import { Menu, X, ChevronRight, ShoppingBag, Eye, Move, PenTool, Home as HomeIcon, Shirt } from 'lucide-react';
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touchy Subjects | Cursor Fingerprint Option</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --red: #ef4444;
+      }
 
-const CursorFingerprint = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  const springConfig = { damping: 25, stiffness: 150 };
-  const cursorX = useSpring(mouseX, springConfig);
-  const cursorY = useSpring(mouseY, springConfig);
-  
-  const [isPointerDown, setIsPointerDown] = useState(false);
+      * {
+        box-sizing: border-box;
+      }
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    const handleMouseDown = () => setIsPointerDown(true);
-    const handleMouseUp = () => setIsPointerDown(false);
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: #f5f7fb;
+        background:
+          radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.18), transparent 26%),
+          radial-gradient(circle at 84% 18%, rgba(59, 130, 246, 0.18), transparent 24%),
+          linear-gradient(180deg, #06070d 0%, #0b0d15 100%);
+        overflow-x: hidden;
+      }
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [mouseX, mouseY]);
+      .cursor-print {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 180px;
+        height: 180px;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        opacity: 0.34;
+        z-index: 30;
+        mix-blend-mode: screen;
+      }
 
-  return (
-    <motion.div
-      className="fixed inset-0 pointer-events-none z-[100] overflow-hidden"
-      style={{
-        x: cursorX,
-        y: cursorY,
-        translateX: '-50%',
-        translateY: '-50%',
-      }}
-    >
-      <motion.svg
-        width="160"
-        height="160"
-        viewBox="0 0 100 100"
-        animate={{
-          scale: isPointerDown ? 0.8 : 1,
-          rotate: isPointerDown ? 15 : 0,
-        }}
-        transition={{ type: 'spring', ...springConfig }}
-        className="opacity-20 text-black fill-none"
-      >
-        <motion.path
-          d="M20 50 Q 20 20 50 20 Q 80 20 80 50 M30 50 Q 30 30 50 30 Q 70 30 70 50 M40 50 Q 40 40 50 40 Q 60 40 60 50 M50 50 L 50 70"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-        />
-        <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 4" />
-      </motion.svg>
-    </motion.div>
-  );
-};
+      .cursor-print svg {
+        width: 100%;
+        height: 100%;
+      }
 
-const Section = ({ children, className = "" }) => (
-  <motion.section
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
-    className={className}
-  >
-    {children}
-  </motion.section>
-);
+      .shell {
+        width: min(1160px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 1rem 0 4rem;
+      }
 
-const App = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [scrolled, setScrolled] = useState(false);
+      .topbar,
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        flex-wrap: wrap;
+      }
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      .topbar a,
+      .topbar span,
+      .footer span {
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: rgba(245, 247, 251, 0.66);
+      }
 
-  const categories = [
-    { id: 'wear', name: 'Wear', icon: <ShoppingBag size={22} />, color: '#8B5CF6', desc: 'Haptic Adornments' },
-    { id: 'feel', name: 'Feel', icon: <Move size={22} />, color: '#3B82F6', desc: 'Tactile EDC' },
-    { id: 'home', name: 'Home', icon: <HomeIcon size={22} />, color: '#10B981', desc: 'Sensory Interior' },
-    { id: 'desk', name: 'Desk', icon: <PenTool size={22} />, color: '#F59E0B', desc: 'Kinetic Office' },
-    { id: 'thread', name: 'Thread', icon: <Shirt size={22} />, color: '#EF4444', desc: 'Textile Architecture' },
-  ];
+      .hero {
+        min-height: 84svh;
+        display: grid;
+        align-content: center;
+        gap: 1.2rem;
+      }
 
-  const products = [
-    { id: 1, category: 'feel', name: 'The Slider', price: '$85', desc: 'Precision machined plates with adjustable magnetic tension.', image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800' },
-    { id: 2, category: 'wear', name: 'The Axis Ring', price: '$120', desc: 'Matte black band with a rotating knurled copper cylinder.', image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800' },
-    { id: 3, category: 'desk', name: 'The Pendulum Pen', price: '$95', desc: 'Balanced rollerball with a silent, spinning cap.', image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=800' },
-    { id: 4, category: 'home', name: 'The Lid', price: '$150', desc: '3lb charcoal velvet lap pillow weighted with glass microbeads.', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&q=80&w=800' },
-    { id: 5, category: 'thread', name: 'Secret Hoodie', price: '$110', desc: 'Heavyweight fleece with hidden friction loops.', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800' },
-    { id: 6, category: 'desk', name: 'The Topo Pad', price: '$75', desc: 'Recycled leather mat with topographic ridges.', image: 'https://images.unsplash.com/photo-1616412411311-594ddd7609f2?auto=format&fit=crop&q=80&w=800' }
-  ];
+      h1,
+      h2 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: -0.08em;
+        line-height: 0.9;
+      }
 
-  const filteredProducts = activeCategory === 'all' 
-    ? products 
-    : products.filter(p => p.category === activeCategory);
+      h1 {
+        font-size: clamp(4.2rem, 12vw, 9.6rem);
+      }
 
-  return (
-    <div className="min-h-screen bg-[#FBFBFA] text-[#121212] font-sans selection:bg-orange-100 overflow-x-hidden">
-      <CursorFingerprint />
+      .gradient {
+        display: block;
+        color: transparent;
+        background: linear-gradient(90deg, var(--purple), var(--blue), var(--green), var(--orange), var(--red));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
 
-      {/* Navigation */}
-      <nav className={`fixed w-full z-[80] transition-all duration-700 ${scrolled ? 'bg-white/90 backdrop-blur-xl py-4 shadow-xl' : 'bg-transparent py-10'}`}>
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col group cursor-pointer"
-          >
-            <span className="text-3xl font-black tracking-tighter uppercase leading-none">Touchy Subjects</span>
-            <div className="flex space-x-1 mt-2">
-              {categories.map(c => <div key={c.id} className="h-1.5 w-4 rounded-full" style={{ backgroundColor: c.color }} />)}
-            </div>
-          </motion.div>
+      p {
+        max-width: 40rem;
+        margin: 0;
+        line-height: 1.8;
+        color: rgba(245, 247, 251, 0.74);
+      }
 
-          <div className="hidden md:flex space-x-12 items-center">
-            {categories.map((cat, i) => (
-              <motion.button 
-                key={cat.id}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                onClick={() => setActiveCategory(cat.id)}
-                className="text-sm uppercase tracking-[0.25em] transition-all relative py-2"
-                style={{ 
-                  color: activeCategory === cat.id ? cat.color : '#444',
-                  fontWeight: activeCategory === cat.id ? '900' : '600'
-                }}
-              >
-                {cat.name}
-                {activeCategory === cat.id && (
-                  <motion.span 
-                    layoutId="underline"
-                    className="absolute -bottom-1 left-0 w-full h-[3px] rounded-full" 
-                    style={{ backgroundColor: cat.color }} 
-                  />
-                )}
-              </motion.button>
-            ))}
-            <button className="bg-[#121212] text-white px-8 py-3 text-xs uppercase tracking-[0.2em] font-bold rounded-full hover:scale-110 transition-all shadow-lg">
-              Shop
-            </button>
-          </div>
+      .actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
 
-          <button className="md:hidden z-[90]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
-          </button>
-        </div>
-      </nav>
+      .button {
+        padding: 0.95rem 1.25rem;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+      }
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#FBFBFA]">
-        <div className="max-w-7xl mx-auto px-6 relative z-10 w-full grid lg:grid-cols-2 gap-16 items-center">
-          <div className="order-2 lg:order-1">
-            <motion.h1 
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="text-8xl md:text-[10rem] font-black leading-[0.8] tracking-tighter mb-10 uppercase"
-            >
-              Feel <br />
-              <motion.span 
-                animate={{ 
-                  backgroundImage: [
-                    'linear-gradient(to right, #8B5CF6, #3B82F6)',
-                    'linear-gradient(to right, #3B82F6, #10B981)',
-                    'linear-gradient(to right, #10B981, #F59E0B)',
-                    'linear-gradient(to right, #F59E0B, #8B5CF6)',
-                  ]
-                }}
-                transition={{ duration: 10, repeat: Infinity, repeatType: "mirror" }}
-                className="text-transparent bg-clip-text"
-              >
-                Everything.
-              </motion.span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="text-2xl md:text-3xl text-gray-500 mb-12 leading-relaxed max-w-xl font-medium"
-            >
-              Elevated tactile tools for focused minds. Rooted in the vibrant Kokomo art scene.
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
-              className="flex flex-col sm:flex-row gap-6"
-            >
-              <button className="bg-[#121212] text-white px-12 py-6 text-sm uppercase tracking-[0.25em] font-black flex items-center justify-center group overflow-hidden relative">
-                <span className="relative z-10 flex items-center">The Collection <ChevronRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" /></span>
-                <motion.div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
-              </button>
-              <button className="bg-white border-2 border-gray-100 px-12 py-6 text-sm uppercase tracking-[0.25em] font-black">
-                The Story
-              </button>
-            </motion.div>
-          </div>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="order-1 lg:order-2 relative"
-          >
-             <div className="relative aspect-square max-w-lg mx-auto">
-                <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-6 p-10 opacity-30">
-                   {categories.slice(0, 4).map((c, i) => (
-                     <motion.div 
-                       key={c.id}
-                       animate={{ borderRadius: ["3rem", "6rem", "3rem"] }}
-                       transition={{ duration: 5, delay: i * 0.5, repeat: Infinity }}
-                       className="w-full h-full" 
-                       style={{ backgroundColor: c.color }} 
-                     />
-                   ))}
-                </div>
-                <img 
-                  src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800" 
-                  className="w-full h-full object-cover rounded-[4rem] shadow-2xl relative z-10 grayscale hover:grayscale-0 transition-all duration-1000"
-                  alt="Hero Product"
-                />
-             </div>
-          </motion.div>
+      .button--solid {
+        color: #05070c;
+        background: linear-gradient(90deg, var(--purple), var(--blue), var(--green));
+      }
+
+      .button--ghost {
+        color: #f5f7fb;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        padding: 1.2rem;
+        border-radius: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 55px rgba(2, 4, 10, 0.35);
+      }
+
+      .card strong {
+        display: block;
+        margin-bottom: 0.7rem;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(245, 247, 251, 0.58);
+      }
+
+      @media (max-width: 900px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cursor-print" id="cursor-print" aria-hidden="true">
+      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="fingerGradient" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#8B5CF6" />
+            <stop offset="25%" stop-color="#3B82F6" />
+            <stop offset="50%" stop-color="#10B981" />
+            <stop offset="75%" stop-color="#F59E0B" />
+            <stop offset="100%" stop-color="#EF4444" />
+          </linearGradient>
+        </defs>
+        <path d="M30 92C30 54 58 28 92 28C126 28 150 54 150 92" stroke="url(#fingerGradient)" stroke-width="2.4" stroke-linecap="round" />
+        <path d="M42 92C42 62 64 40 92 40C120 40 140 62 140 92" stroke="url(#fingerGradient)" stroke-width="2.1" stroke-linecap="round" />
+        <path d="M54 92C54 70 72 52 92 52C112 52 128 70 128 92" stroke="url(#fingerGradient)" stroke-width="1.9" stroke-linecap="round" />
+        <path d="M66 92C66 78 79 66 92 66C105 66 116 78 116 92" stroke="url(#fingerGradient)" stroke-width="1.7" stroke-linecap="round" />
+        <path d="M92 92V132" stroke="url(#fingerGradient)" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <main class="shell">
+      <header class="topbar">
+        <a href="./index.html">Back to Gallery</a>
+        <span>Cursor Fingerprint Option</span>
+      </header>
+
+      <section class="hero">
+        <h1>
+          Follow
+          <span class="gradient">touch.</span>
+        </h1>
+        <p>
+          This version puts interaction first. A fingerprint cursor follows the pointer and turns the
+          page into a more tactile, playful concept without needing a full WebGL scene.
+        </p>
+        <div class="actions">
+          <a class="button button--solid" href="./testpage3.html">Compare Heading Option</a>
+          <a class="button button--ghost" href="./testpage4.html">See Morphing Background</a>
         </div>
       </section>
 
-      {/* Category Icons Bar */}
-      <Section className="bg-white border-y-2 border-gray-50 py-20 relative">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {categories.map((cat, i) => (
-              <motion.button 
-                key={cat.id}
-                whileHover={{ y: -10 }}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`flex flex-col items-center p-8 rounded-[2.5rem] transition-all duration-500 group ${activeCategory === cat.id ? 'scale-110 shadow-2xl bg-white ring-1 ring-gray-100' : 'hover:bg-gray-50 opacity-60 hover:opacity-100'}`}
-              >
-                <div 
-                  className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-12"
-                  style={{ 
-                    backgroundColor: `${cat.color}15`, 
-                    color: cat.color,
-                  }}
-                >
-                  {cat.icon}
-                </div>
-                <span className="text-sm uppercase tracking-[0.2em] font-black" style={{ color: activeCategory === cat.id ? cat.color : '#121212' }}>
-                  {cat.name}
-                </span>
-                <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-2 font-bold">{cat.desc}</span>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </Section>
+      <section class="cards">
+        <article class="card">
+          <strong>Strength</strong>
+          <h2>Immediate interaction.</h2>
+          <p>The brand feels alive as soon as the cursor moves, even before deeper scrolling.</p>
+        </article>
+        <article class="card">
+          <strong>Use case</strong>
+          <h2>Event or art-forward launch.</h2>
+          <p>It works well when the site should feel more like an exhibit than a product grid.</p>
+        </article>
+        <article class="card">
+          <strong>Tradeoff</strong>
+          <h2>Less calm.</h2>
+          <p>The cursor effect is memorable, but it competes more with copy and merchandising.</p>
+        </article>
+      </section>
 
-      {/* Product Grid */}
-      <Section className="max-w-7xl mx-auto px-6 py-40 relative">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24">
-          <div>
-            <h2 className="text-6xl font-black uppercase tracking-tighter leading-none">Collection</h2>
-            <div className="flex space-x-1.5 mt-5">
-              {categories.map(c => <motion.div key={c.id} animate={{ width: activeCategory === c.id ? 64 : 12 }} className="h-2 rounded-full transition-all" style={{ backgroundColor: c.color }} />)}
-            </div>
-          </div>
-          <button 
-            onClick={() => setActiveCategory('all')}
-            className={`mt-10 md:mt-0 text-xs uppercase tracking-[0.35em] font-black py-3 px-10 rounded-full border-2 transition-all ${activeCategory === 'all' ? 'bg-[#121212] text-white border-transparent' : 'border-gray-200 text-gray-400'}`}
-          >
-            All Products
-          </button>
-        </div>
-
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-32"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map(product => {
-              const catColor = categories.find(c => c.id === product.category)?.color || '#121212';
-              return (
-                <motion.div 
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  key={product.id} 
-                  className="group cursor-pointer"
-                >
-                  <div className="relative aspect-square overflow-hidden rounded-[3.5rem] bg-gray-100 mb-10 shadow-sm group-hover:shadow-2xl transition-all duration-500">
-                    <img src={product.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" style={{ backgroundColor: catColor }} />
-                    <div className="absolute bottom-10 left-10 right-10 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
-                       <button className="w-full bg-white text-[11px] uppercase tracking-[0.2em] font-black py-5 rounded-3xl shadow-xl">
-                          Explore Design
-                       </button>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-start px-4">
-                    <div>
-                      <span className="text-xs uppercase font-black tracking-[0.25em]" style={{ color: catColor }}>{product.category}</span>
-                      <h3 className="text-2xl uppercase tracking-tighter font-black mt-2">{product.name}</h3>
-                      <p className="text-base text-gray-400 font-bold max-w-[280px] mt-3">{product.desc}</p>
-                    </div>
-                    <span className="text-2xl font-black">{product.price}</span>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </motion.div>
-      </Section>
-
-      {/* Local Heritage */}
-      <Section className="bg-white py-48 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-24 items-center">
-          <div className="relative aspect-square rounded-[4rem] overflow-hidden group shadow-2xl">
-             <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" />
-             <div className="absolute inset-0 bg-black/40" />
-             <div className="absolute bottom-12 left-12 text-white">
-                <span className="text-7xl font-black italic tracking-tighter">Kokomo</span>
-                <p className="text-sm uppercase tracking-[0.5em] font-black mt-4 opacity-80">Indiana Heritage</p>
-             </div>
-          </div>
-          <div className="relative z-10">
-            <h2 className="text-7xl font-black mb-10 leading-[0.85] tracking-tighter uppercase">Rooted in <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">Pure Craft.</span></h2>
-            <p className="text-2xl text-gray-600 leading-relaxed mb-12 font-medium">
-              Born from the artistic heartbeat of the Kokomo Art Association and Artworks Gallery. We curation experiences for the restless mind.
-            </p>
-            <button className="bg-[#121212] text-white px-14 py-7 text-sm uppercase tracking-[0.3em] font-black hover:scale-105 transition-all">
-              The Association
-            </button>
-          </div>
-        </div>
-      </Section>
-
-      {/* Footer */}
-      <footer className="bg-[#121212] text-white py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-20 mb-24">
-            <div>
-              <span className="text-4xl font-black tracking-tighter uppercase leading-none">Touchy <br />Subjects</span>
-              <p className="text-base text-gray-500 mt-10 leading-relaxed font-bold">
-                Premium sensory tools for the restless mind. Designed in the heart of the Midwest.
-              </p>
-            </div>
-            {['Pillars', 'Company', 'Social'].map((title, i) => (
-              <div key={i}>
-                <h4 className="text-xs uppercase tracking-widest font-black mb-10 text-white/40">{title}</h4>
-                <ul className="space-y-6">
-                  {['Link One', 'Link Two', 'Link Three'].map(link => (
-                    <li key={link}><a href="#" className="text-base text-gray-400 font-bold hover:text-white transition-colors">{link}</a></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="pt-16 border-t border-white/10 flex justify-between items-center text-xs uppercase tracking-[0.4em] text-white/20 font-black">
-            <span>&copy; 2024 Touchy Subjects LLC.</span>
-            <div className="flex space-x-12">
-              <a href="#" className="hover:text-white transition-colors">Facebook</a>
-              <a href="#" className="hover:text-white transition-colors">Instagram</a>
-            </div>
-          </div>
-        </div>
+      <footer class="footer">
+        <span>Purple / Blue / Green / Orange / Red</span>
+        <span>Touchy Subjects LLC</span>
       </footer>
-    </div>
-  );
-};
+    </main>
 
-export default App;
+    <script>
+      const cursorPrint = document.getElementById("cursor-print");
+      let currentX = window.innerWidth / 2;
+      let currentY = window.innerHeight / 2;
+      let targetX = currentX;
+      let targetY = currentY;
+
+      window.addEventListener("pointermove", (event) => {
+        targetX = event.clientX;
+        targetY = event.clientY;
+      });
+
+      function tick() {
+        currentX += (targetX - currentX) * 0.16;
+        currentY += (targetY - currentY) * 0.16;
+        cursorPrint.style.transform = "translate(" + currentX + "px," + currentY + "px) translate(-50%, -50%)";
+        requestAnimationFrame(tick);
+      }
+
+      tick();
+    </script>
+  </body>
+</html>
